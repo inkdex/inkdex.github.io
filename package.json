@@ -1,0 +1,31 @@
+{
+    "name": "inkdex.github.io",
+    "description": "The Inkdex website.",
+    "version": "0.9.0-beta.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "lint": "eslint --fix",
+        "lint:check": "eslint",
+        "format": "prettier --write '**/*{.md,.yml,.yaml,.json,.js,.ts}'",
+        "format:check": "prettier --check '**/*{.md,.yml,.yaml,.json,.js,.ts}'",
+        "tsc": "tsc --project tsconfig.json --noEmit",
+        "build": "vitepress build src",
+        "preview": "vitepress preview src",
+        "dev": "vitepress dev src",
+        "test": "npm run tsc && npm run lint:check && npm run format:check && npm run build",
+        "prepare": "husky"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.24.0",
+        "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+        "@types/eslint": "^9.6.1",
+        "eslint": "^9.24.0",
+        "husky": "^9.1.7",
+        "prettier": "^3.5.3",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.29.1",
+        "vitepress": "^1.6.3",
+        "vue": "^3.5.13"
+    }
+}
