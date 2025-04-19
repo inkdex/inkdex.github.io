@@ -134,7 +134,7 @@ If you enable the setting <b>Hide Other Groups</b> it will only display the top 
   <li>If you have more than one listing in <b>PRIORITISED VERSIONS</b>, hold press on the hamburger and drag to reorder, with highest priority first, second priority second etc</li>
 </ul>
 
-If you enable the setting <b>Hide Other Versions<b/> it will only display those listed in <b>PRIORITISED VERSIONS</b>. It will display another group only if those in <b>PRIORITISED VERSIONS</b> do not have a chapter available. May need to exit out of the title & go back into it for the chapters to refresh.
+If you enable the setting <b>Hide Other Versions</b> it will only display those listed in <b>PRIORITISED VERSIONS</b>. It will display another group only if those in <b>PRIORITISED VERSIONS</b> do not have a chapter available. May need to exit out of the title & go back into it for the chapters to refresh.
 
 {image}
 
