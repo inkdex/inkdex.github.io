@@ -6,6 +6,10 @@
 
 WIP, markdown, cleanup, images added etc to be done.
 
+### I have blurred covers with a letter (eg U) on them.
+
+This is due to your Content Settings. See {link to Content Settings.md}
+
 ### How do I find what version of Paperback I'm using?
 
 <details>
