@@ -9,6 +9,7 @@ WIP, markdown, cleanup, images added etc to be done.
 ### I have blurred covers with a letter (eg U) on them.
 
 This is due to your Content Settings. See {link to Content Settings.md}
+<p align= "center"><img src="images/V0.9 Content Settings - blurred with U M.png" alt="Blurred Covers" width="300"></p>
 
 ### How do I find what version of Paperback I'm using?
 
@@ -20,23 +21,23 @@ This is due to your Content Settings. See {link to Content Settings.md}
 </ul>
 (note, images taken from ipad. May look slightly different depending on orientation and device)
 
-![Select Settings](Images/Select%20Settings.png)
-![Paperback Version](Images/Paperback%20version.png)
+
+<p align= "center"><img src="Images/Select%20Settings.png" alt="Select Settings" width="300"></p>
+
+<p align= "center"><img src="Images/Paperback%20version.png" alt="Paperback Version" width="300"></p>
+
 </details>
 <details>
 <summary>v0.9</summary>
 <ul>
   <li>At the top of the menu bar, Tap the cog to open Settings </li>
+  <p>
+  <p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
   <li>The version number can be found above the menus. </li>
   <li>The version number will be for example v0.9-r21 </li>
 </ul>
-{image}
-
-{image}
+<p align= "center"><img src="Images/V0.9 Paperback version.png" alt="Paperback Version" width="300"></p>
 </details>
-
-
-
 
 ### How do I find the extension version?
 
@@ -55,13 +56,16 @@ This is due to your Content Settings. See {link to Content Settings.md}
 <details>
 <summary>v0.9</summary>
 <ul>
-  <li> </li>
-  <li> </li>
-  <li> </li>
+  <li>At the top of the menu bar, Tap the cog to open Settings </li>
+  <p>
+    <p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
+  <li>Tap Extensions </li>
+  <p>
+  <p align= "center"><img src="Images/V0.9 Settings - Extensions.png" alt="Settings - Extensions" width="300"></p>
+  <li><b>Loaded Extensions</b> will be displayed with the version number underneath the Extension name.</li>
 </ul>
-{image}
-
-{image}
+<p>
+<p align= "center"><img src="Images/V0.9 settings - Loaded Extensions.png" alt="Settings - Loaded Extensions" width="300"></p>
 </details>
 
 ### Are there any Western Comic extensions?
@@ -69,11 +73,11 @@ This is due to your Content Settings. See {link to Content Settings.md}
 <details>
 <summary>v0.8</summary>
 Currently there are two - ReadAllComics and ReadComicsOnline. Both found in Netsky's Extensions (0.8)
-(The site for ReadAllComics is down. According to X (Twitter), they are working at restoring the site, no eta)
+(The site for ReadAllComics is down currently. According to X (Twitter), they are working at restoring the site, no eta.)
 </details>
 <details>
 <summary>v0.9</summary>
-Batcave
+Batcave<br>
 Found here - https://karrot0.github.io/KakarotExtension/0.9/stable/
 </details>
 
@@ -122,6 +126,7 @@ If you enable the setting <b>Hide Other Groups</b> it will only display the top 
 {image}
 </details>
 <details>
+
 <summary>v0.9</summary>
 <ul>
   <li>In the individual title (eg Solo Leveling), open it so the chapter list is displaying</li>
@@ -140,6 +145,45 @@ If you enable the setting <b>Hide Other Versions</b> it will only display those 
 
 {image}
 </details>
+
+### Are external repos/sources safe?
+
+All sources and repos here are safe to use and their code is open source, meaning you can check what they do and how they work on GitHub.
+
+All the sources/repos posted on InkDex have to be open source!  
+In general sources cannot do any harm to your device, if you're doubtful about a certain source, don't use it. Or check it's code on it's respective GitHub repository.
+
+### What are the best source(s) to install? / What source has x manga?
+
+Please don't ask this question, It's highly subjective.  
+Just look around on the internet for your manga, see if that site is a source, install that source.
+
+If the source does not exist, you can request it in ⁠requests-v08, no guarantee it'll be made.
+
+Be independent and do some research yourself.
+
+### Is there any copyrighted material hosted?
+
+Yes and no. We ourselves do not host anything!
+
+Sources are just scripts to pull information from sites that do host these items. Sources themselves do not have any copyrighted material, the websites they access may do.
+
+This site & the discord server are in no way affiliated with any of those websites, the discord server serves as a central point to get these "scripts" aka sources.
+
+### Why has my request for a source not been added yet?
+
+Source requests are never certain to be added or created.
+
+The channel is there for a source developer to see which source the community wants. It's purely an indication for source developers.
+
+If you want your source to be added, the best chance you have is:
+- Do it yourself.
+- Know someone who knows web scraping and JS/TS, ask them to do it.
+- Request a site/source that is original, not a generic manga/manhua site.
+  
+*Most manga/manhwa or alike are already available on other sources, making a whole source just because you don't want to wait 1 hour for another site to pick it up is not worth it for most developers.
+
+Since we have only a few source developers and most of them are English, foreign sources are unlikely to be added. 
 
 ## Individual Extensions
 
@@ -214,8 +258,6 @@ The MangaDex source has it's own content filtering.
 
 {image}
 </details>
-
-- 
 
 ### MangaBox themed sites (eg Manganato, Mangakakalot, MangaBat) have gaps or splits on the displayed pages
 
