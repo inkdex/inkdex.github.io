@@ -14,7 +14,7 @@ To gain access to the Content Settings in Paperback, first you need to enable th
 
 `Device settings > Apps > Paperback > Enable Content Settings`  
 
-<p style="text-align: center"><img src="images/V0.9 Content Settings - Device Apps.png" alt="Device Apps" width="300"height="100">  <img src="Images/V0.9 Content Settings - Enable Content Settings.png" alt="Paperback Apps Settings" width="300"height="100"></p>
+<p style="text-align: center"><img src="images/V0.9 Content Settings - Device Apps.png" alt="Device Apps" width="300"height="100">  <img src="images/V0.9 Content Settings - Enable Content Settings.png" alt="Paperback Apps Settings" width="300"height="100"></p>
 
 Once enabled, two new sections for content settings will now appear in Paperback's General Settings - LIBRARY CONTENT SETTINGS and SEARCH CONTENT SETTINGS.
 
