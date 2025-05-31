@@ -6,152 +6,74 @@
 
 WIP, markdown, cleanup, images added etc to be done.
 
-### I have blurred covers with a letter (eg U) on them.
+### I have blurred covers with a letter (eg U) on them
 
-This is due to your Content Settings. See {link to Content Settings.md}
+This is due to your Content Settings. See [Content Settings](guides/content-settings.md)
+
 <p align= "center"><img src="images/V0.9 Content Settings - blurred with U M.png" alt="Blurred Covers" width="300"></p>
 
 ### How do I find what version of Paperback I'm using?
 
-<details>
-<summary>v0.8</summary>
-<ul>
-  <li>Go to the Settings tab</li>
-  <li>On the left hand pane, scroll down to near the bottom. The version number will be for example v0.8.9-r28</li>
-</ul>
-(note, images taken from ipad. May look slightly different depending on orientation and device)
+- At the top of the menu bar, Tap the cog to open Settings
 
+<p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
 
-<p align= "center"><img src="Images/Select%20Settings.png" alt="Select Settings" width="300"></p>
+- The version number can be found above the menus. The version number will be for example v0.9-r21
 
-<p align= "center"><img src="Images/Paperback%20version.png" alt="Paperback Version" width="300"></p>
-
-</details>
-<details>
-<summary>v0.9</summary>
-<ul>
-  <li>At the top of the menu bar, Tap the cog to open Settings </li>
-  <p>
-  <p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
-  <li>The version number can be found above the menus. </li>
-  <li>The version number will be for example v0.9-r21 </li>
-</ul>
 <p align= "center"><img src="Images/V0.9 Paperback version.png" alt="Paperback Version" width="300"></p>
-</details>
 
 ### How do I find the extension version?
 
-<details>
-<summary>v0.8</summary>
-<ul>
-  <li>Go to the Settings tab </li>
-  <li>On the left hand pane, select Extensions </li>
-  <li>Your Enabled Extensions will appear on the right hand side with the version number underneath the Extension name. </li>
-</ul>
-(note, images taken from ipad. May look slightly different depending on orientation and device)
-{image}
+- At the top of the menu bar, Tap the cog to open Settings
 
-{image}
-</details>
-<details>
-<summary>v0.9</summary>
-<ul>
-  <li>At the top of the menu bar, Tap the cog to open Settings </li>
-  <p>
-    <p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
-  <li>Tap Extensions </li>
-  <p>
-  <p align= "center"><img src="Images/V0.9 Settings - Extensions.png" alt="Settings - Extensions" width="300"></p>
-  <li><b>Loaded Extensions</b> will be displayed with the version number underneath the Extension name.</li>
-</ul>
-<p>
+<p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
+
+- Tap Extensions
+
+<p align= "center"><img src="Images/V0.9 Settings - Extensions.png" alt="Settings - Extensions" width="300"></p>
+
+- **Loaded Extensions** will be displayed with the version number underneath the Extension name.
+
 <p align= "center"><img src="Images/V0.9 settings - Loaded Extensions.png" alt="Settings - Loaded Extensions" width="300"></p>
-</details>
 
 ### Are there any Western Comic extensions?
 
-<details>
-<summary>v0.8</summary>
-Currently there are three - BatCave, ReadAllComics, ReadComicsOnline. 
-
-ReadComicsOnline is found in Netsky's Extensions (0.8) The ReadAllComics found here is currently having issues.
-
-The BatCave extension & a working ReadAllComics can be found in Karrot's v0.8 extensions. This needs to be added manually. (for inst on adding extensions manually see - https://paperback.moe/getting-started/adding-content/third-party-extensions#adding-repositories, & select "Manually")
-
-Repository Base URL - https://karrot0.github.io/KakarotExtension0.8/0.8-stable/
-
-IMPORTANT - the Repository Base URL is Case Sensitive. ie it needs to be KakarotExtension NOT kakarotextension 
-</details>
-<details>
-<summary>v0.9</summary>
-Batcave<br>
-Found here - https://karrot0.github.io/KakarotExtension/0.9/stable/
-</details>
+- Currently there is only one - Batcave. More are expected to follow.  
+  Found here - https://karrot0.github.io/KakarotExtension/0.9/stable/
 
 ### Is there an extension for x site
-<details>
-<summary>v0.8</summary>
-Discord has a search function. Please use it.
 
-To search for an extension you want to search in the relevant repo channel, eg #repos-v08
-
-For example in the discord search field place -
-
-<kbd>in: #repos-v08 mangadex</kbd>
-
-Note that extension names don't have spaces, so for Asura Scans for example it is listed as AsuraScan  
-{image}
-
-{image}
-</details>
-<details>
-<summary>v0.9</summary>
-
-link to the readme ???
-
-{image}
-
-{image}
-</details>
+link to come
 
 ### How do I filter other scans out on Aggregate sites (eg ComicK, MangaDex)?
+
 > [!NOTE]
->Some titles may have several scanlation groups translating them as well as an official version. Certain sites make all these available, leading there to be multiple versions of the same chapter. For example Chapter 1 may have an Official version, an asurascans version and a Flame Scans version.
+> Some titles may have several scanlation groups translating them as well as an official version. Certain sites make all these available, leading there to be multiple versions of the same chapter. For example Chapter 1 may have an Official version, an asurascans version and a Flame Scans version.
 
-<details>
-<summary>v0.8</summary>
-<ul>
-  <li>In the individual title (eg Solo Leveling), open it so the chapter list is displaying</li>
-  <li>Tap on the <i>ellipsis (...)</i> </li>
-  <li>Select <i>Group Priority</i></li>
-  <li>Here you can sort the priority of the scan groups by dragging on the hamburger (the three horizontal slashes). For example you could Official first followed by Flame Scans etc.</li>
-</ul>
-If you enable the setting <b>Hide Other Groups</b> it will only display the top group. It will display another group only if the first group does not have a chapter available. May need to exit out of the title & go back into it for the chapters to refresh.
+- In the individual title (eg Solo Leveling), open it so the chapter list is displaying
+- Tap on the _ellipsis (...)_
 
-{image}
+<p align= "center"><img src="Images/V0.9 ellipsis within chapter listing.png" alt="Chapter listing ellipsis" width="300"></p>
 
-{image}
-</details>
-<details>
+- Select _Manage Version Priority_
 
-<summary>v0.9</summary>
-<ul>
-  <li>In the individual title (eg Solo Leveling), open it so the chapter list is displaying</li>
-  <li>Tap on the <i>ellipsis (...)</i> </li>
-  <li>Select <i>Manage Version Priority</i></li>
-  <ul> 	
-	<li>A popup titled <b>Title Settings</b> will open</li>
-  </ul>	
-  <li>In the section titled <b>AVAILABLE VERSIONS</b> tap one or more listings, which will move them up to the <b>PRIORITISED VERSIONS</b></li>
-  <li>If you have more than one listing in <b>PRIORITISED VERSIONS</b>, hold press on the hamburger and drag to reorder, with highest priority first, second priority second etc</li>
-</ul>
+<p align= "center"><img src="Images/V0.9 ellipsis menu pop up.png" alt="ellipsis menu pop up" width="300"></p>
 
-If you enable the setting <b>Hide Other Versions</b> it will only display those listed in <b>PRIORITISED VERSIONS</b>. It will display another group only if those in <b>PRIORITISED VERSIONS</b> do not have a chapter available. May need to exit out of the title & go back into it for the chapters to refresh.
+- A popup titled **Title Settings** will open
 
-{image}
+<p align= "center"><img src="Images/V0.9 Title Settings.png" alt="Title Settings popup" width="300"></p>
 
-{image}
-</details>
+- In the section titled **AVAILABLE VERSIONS** tap one or more listings, which will move them up to the **PRIORITISED VERSIONS**
+
+<p align= "center"><img src="Images/V0.9 prioritised versions.png" alt="Title Settings - PRIORITISED VERSIONS" width="300"></p>
+
+- If you have more than one listing in **PRIORITISED VERSIONS**, hold press on the hamburger and drag to reorder, with highest priority first, second priority second etc
+
+<p align= "center"><img src="Images/V0.9 prioritised versions sorted.png" alt="Title Settings - PRIORITISED VERSIONS sorted" width="300"></p>
+
+If you enable the setting **Hide Other Versions** it will only display those listed in **PRIORITISED VERSIONS**. It will display another group only if those in **PRIORITISED VERSIONS** do not have a chapter available. May need to exit out of the title & go back into it for the chapters to refresh.
+
+<p align= "center"><img src="Images/V0.9 Hide Other Versions enabled.png" alt="Hide Other Versions enabled" width="300"></p>
 
 ### Are external repos/sources safe?
 
@@ -184,87 +106,89 @@ Source requests are never certain to be added or created.
 The channel is there for a source developer to see which source the community wants. It's purely an indication for source developers.
 
 If you want your source to be added, the best chance you have is:
+
 - Do it yourself.
 - Know someone who knows web scraping and JS/TS, ask them to do it.
 - Request a site/source that is original, not a generic manga/manhua site.
-  
-*Most manga/manhwa or alike are already available on other sources, making a whole source just because you don't want to wait 1 hour for another site to pick it up is not worth it for most developers.
 
-Since we have only a few source developers and most of them are English, foreign sources are unlikely to be added. 
+\*Most manga/manhwa or alike are already available on other sources, making a whole source just because you don't want to wait 1 hour for another site to pick it up is not worth it for most developers.
+
+Since we have only a few source developers and most of them are English, foreign sources are unlikely to be added.
 
 ## Individual Extensions
 
-### Bato.To - How do I remove scans in other languages?
+### How do I remove scans in other languages? - Bato.To or MangaPlus
 
-Tap Cog to open Settings > Extensions > Bato.To > Settings > Languages 
+- At the top of the menu bar, Tap the cog to open Settings
 
-### Comick - How do I remove scans in other languages?
-<details>
-<summary>v0.8</summary>
-<ul>
-  <li>Settings > Extensions > Comick > Language Settings > Languages </li>
-  <li>Then select the language/s you wish to read. a tick will appear next to them. </li>
-  <li>You may wish to also toggle the "Filter Homepage Language" to on. </li>
-</ul>
+<p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
 
-{image}
+- Tap Extensions
 
-{image}
-</details>
-<details>
-<summary>v0.9</summary>
-<ul>
-  <li>Tap Cog to open Settings > Extensions > Comick > Settings > Language Settings > Languages </li>
-  <li>Then select the language/s you wish to read. a tick will appear next to them. </li>
-  <li>You may wish to also toggle the "Filter Homepage Language" to on. </li>
-</ul>
+<p align= "center"><img src="Images/V0.9 Settings - Extensions.png" alt="Settings - Extensions" width="300"></p>
 
-{image}
+- Tap the extension whose language settings you wish to adjust
+- Settings
+- Languages
+- Then select the language/s you wish to read. A tick will appear next to them.
 
-{image}
-</details>
+### How do I remove scans in other languages? - Comick
 
-(note, images taken from ipad. May look slightly different depending on orientation and device)
+- At the top of the menu bar, Tap the cog to open Settings
 
+<p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
 
+- Tap Extensions
 
+<p align= "center"><img src="Images/V0.9 Settings - Extensions.png" alt="Settings - Extensions" width="300"></p>
+
+- Comick
+- Settings
+- Language Settings
+- Languages
+- Then select the language/s you wish to read. A tick will appear next to them.
+- You may wish to also toggle the "Filter Homepage Language" to on.
+
+<!--
 Uploaders Settings
 
 - Settings > Extensions > Comick > Uploaders Settings.
 
 > I've not used this section, so cannot comment on how to use it, so you will need to experiment. I have enabled "Enable Uploader filtering" as it may be needed to be on for step to above to work.
+-->
 
-### MangaDex - How do I remove scans in other languages?
+### How do I remove scans in other languages? - MangaDex or MangaFire
 
-Tap Cog to open Settings > Extensions > MangaDex > Settings > Content Settings > Languages 
+<p align= "center"><img src="Images/V0.9 Settings Cog.png" alt="Settings Cog" width="300"></p>
+
+- Tap Extensions
+
+<p align= "center"><img src="Images/V0.9 Settings - Extensions.png" alt="Settings - Extensions" width="300"></p>
+
+- Tap the extension whose language settings you wish to adjust
+- Settings
+- Content Settings
+- Languages
 
 ### MangaDex - Some titles/chapters that are available on the site are not showing in paperback
 
-The MangaDex source has it's own content filtering.
-<details>
-<summary>v0.8</summary>
-<ul>
-  <li>Settings > Extensions > MangaDex > Content Settings > Content Rating </li>
-  <li> </li>
-  <li> </li>
-</ul>
+There are two common reasons for this -
 
-{image}
+1. MangaDex extension Content Filtering
+2. The chapters of a title are not hosted on MangaDex, just linked
 
-{image}
-</details>
-<details>
-<summary>v0.9</summary>
-<ul>
-  <li>Tap Cog to open Settings > Extensions > MangaDex > Settings > Content Settings > Content Rating</li>
-  <li> </li>
-  <li> </li>
-</ul>
+To change MangaDex Content Filtering
 
-{image}
+- Tap Cog to open Settings > Extensions > MangaDex > Settings > Content Settings > Content Rating
 
-{image}
-</details>
+How to tell if the
+title is not hosted on MangaDex
+
+- Open the title in Paperback
+- There will be an error msg stating
+
+> An error occurred  
+>  A Javascript error occurred: Chapters are hosted externally outside MangaDex, you'll need to use another source or read it online.
 
 ### MangaBox themed sites (eg Manganato, Mangakakalot, MangaBat) have gaps or splits on the displayed pages
 
@@ -275,4 +199,3 @@ The MangaDex source has it's own content filtering.
 ## Support
 
 Coming soon!
-
