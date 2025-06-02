@@ -21,4 +21,4 @@ Once enabled, two new sections for content settings will now appear in Paperback
 <p align= "center"><img src="/V0.9-Content-Settings---Content-Settings-in-Paperback.png" alt="Content Settings in Paperback" width="300"></p>
 
 > [!TIP]
-> Some extensions have their own Content Settings as well. See the [FAQ](src/faq-support.md)
+> Some extensions have their own Content Settings as well. See the [FAQ](../faq-support.md)
