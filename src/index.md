@@ -26,10 +26,15 @@ features:
       link: /guides
       linkText: View Guides
     - icon: 🤝
-      title: Get Support
-      details: The FAQ covers common questions—if you need more help, our support resources and community are here for you.
-      link: /faq-support#FAQ
+      title: Frequently Asked Questions
+      details: The FAQ covers common questions
+      link: /faq
       linkText: Visit the FAQ
+    - icon: 🤝
+      title: Get Support
+      details: If you need more help, our support resources and community are here for you.
+      link: /support
+      linkText: Visit Support
     - icon: 🛠️
       title: Contribute & Build
       details: Inkdex is built by volunteers. Learn how to create extensions, contribute code, or improve the site.
