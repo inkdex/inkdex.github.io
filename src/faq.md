@@ -8,31 +8,31 @@ WIP, markdown, cleanup, images added etc to be done.
 
 This is due to your Content Settings. See [Content Settings](guides/content-settings.md)
 
-<p align= "center"><img src="/v0.9/Content-Settings-blurred-with-U-M.avif" alt="Blurred Covers" width="300"></p>
+<p align= "center"><img src="/v0.9/content-settings-blurred-with-u-m.avif" alt="Blurred Covers" width="300"></p>
 
 ### How do I find what version of Paperback I'm using?
 
 - At the top of the menu bar, Tap the cog to open Settings
 
-<p align= "center"><img src="/v0.9/Settings-Cog.avif" alt="Settings Cog" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-cog.avif" alt="Settings Cog" width="300"></p>
 
 - The version number can be found above the menus. The version number will be for example v0.9-r21
 
-<p align= "center"><img src="/v0.9/Paperback-version.avif" alt="Paperback Version" width="300"></p>
+<p align= "center"><img src="/v0.9/paperback-version.avif" alt="Paperback Version" width="300"></p>
 
 ### How do I find the extension version?
 
 - At the top of the menu bar, Tap the cog to open Settings
 
-<p align= "center"><img src="/v0.9/Settings-Cog.avif" alt="Settings Cog" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-cog.avif" alt="Settings Cog" width="300"></p>
 
 - Tap Extensions
 
-<p align= "center"><img src="/v0.9/Settings-Extensions.avif" alt="Settings - Extensions" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-extensions.avif" alt="Settings - Extensions" width="300"></p>
 
 - **Loaded Extensions** will be displayed with the version number underneath the Extension name.
 
-<p align= "center"><img src="/v0.9/settings-Loaded-Extensions.avif" alt="Settings - Loaded Extensions" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-loaded-extensions.avif" alt="Settings - Loaded Extensions" width="300"></p>
 
 ### Are there any Western Comic extensions?
 
@@ -59,7 +59,7 @@ link to come
 
 - A popup titled **Title Settings** will open
 
-<p align= "center"><img src="/v0.9/Title-Settings.avif" alt="Title Settings popup" width="300"></p>
+<p align= "center"><img src="/v0.9/title-settings.avif" alt="Title Settings popup" width="300"></p>
 
 - In the section titled **AVAILABLE VERSIONS** tap one or more listings, which will move them up to the **PRIORITISED VERSIONS**
 
@@ -71,7 +71,7 @@ link to come
 
 If you enable the setting **Hide Other Versions** it will only display those listed in **PRIORITISED VERSIONS**. It will display another group only if those in **PRIORITISED VERSIONS** do not have a chapter available. May need to exit out of the title & go back into it for the chapters to refresh.
 
-<p align= "center"><img src="/v0.9/Hide-Other-Versions-enabled.avif" alt="Hide Other Versions enabled" width="300"></p>
+<p align= "center"><img src="/v0.9/hide-other-versions-enabled.avif" alt="Hide Other Versions enabled" width="300"></p>
 
 ### Are external repos/sources safe?
 
@@ -119,11 +119,11 @@ Since we have only a few source developers and most of them are English, foreign
 
 - At the top of the menu bar, Tap the cog to open Settings
 
-<p align= "center"><img src="/v0.9/Settings-Cog.avif" alt="Settings Cog" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-cog.avif" alt="Settings Cog" width="300"></p>
 
 - Tap Extensions
 
-<p align= "center"><img src="/v0.9/Settings-Extensions.avif" alt="Settings - Extensions" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-extensions.avif" alt="Settings - Extensions" width="300"></p>
 
 - Tap the extension whose language settings you wish to adjust
 - Settings
@@ -134,11 +134,11 @@ Since we have only a few source developers and most of them are English, foreign
 
 - At the top of the menu bar, Tap the cog to open Settings
 
-<p align= "center"><img src="/v0.9/Settings-Cog.avif" alt="Settings Cog" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-cog.avif" alt="Settings Cog" width="300"></p>
 
 - Tap Extensions
 
-<p align= "center"><img src="/v0.9/Settings-Extensions.avif" alt="Settings - Extensions" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-extensions.avif" alt="Settings - Extensions" width="300"></p>
 
 - Comick
 - Settings
@@ -157,11 +157,11 @@ Uploaders Settings
 
 ### How do I remove scans in other languages? - MangaDex or MangaFire
 
-<p align= "center"><img src="/v0.9/Settings-Cog.avif" alt="Settings Cog" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-cog.avif" alt="Settings Cog" width="300"></p>
 
 - Tap Extensions
 
-<p align= "center"><img src="/v0.9/Settings-Extensions.avif" alt="Settings - Extensions" width="300"></p>
+<p align= "center"><img src="/v0.9/settings-extensions.avif" alt="Settings - Extensions" width="300"></p>
 
 - Tap the extension whose language settings you wish to adjust
 - Settings
