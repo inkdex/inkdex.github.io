@@ -2,8 +2,6 @@
 
 ## General
 
-WIP, markdown, cleanup, images added etc to be done.
-
 ### I have blurred covers with a letter (eg U) on them
 
 This is due to your Content Settings. See [Content Settings](guides/content-settings.md)
@@ -43,7 +41,7 @@ This is due to your Content Settings. See [Content Settings](guides/content-sett
 
 link to come
 
-### How do I filter other scans out on Aggregate sites (eg ComicK, MangaDex)?
+### How do I filter other scans out on Aggregate sites (eg MangaDex)?
 
 > [!NOTE]
 > Some titles may have several scanlation groups translating them as well as an official version. Certain sites make all these available, leading there to be multiple versions of the same chapter. For example Chapter 1 may have an Official version, an asurascans version and a Flame Scans version.
@@ -129,31 +127,6 @@ Since we have only a few source developers and most of them are English, foreign
 - Settings
 - Languages
 - Then select the language/s you wish to read. A tick will appear next to them.
-
-### How do I remove scans in other languages? - Comick
-
-- At the top of the menu bar, Tap the cog to open Settings
-
-<p align= "center"><img src="/v0.9/settings-cog.avif" alt="Settings Cog" width="300"></p>
-
-- Tap Extensions
-
-<p align= "center"><img src="/v0.9/settings-extensions.avif" alt="Settings - Extensions" width="300"></p>
-
-- Comick
-- Settings
-- Language Settings
-- Languages
-- Then select the language/s you wish to read. A tick will appear next to them.
-- You may wish to also toggle the "Filter Homepage Language" to on.
-
-<!--
-Uploaders Settings
-
-- Settings > Extensions > Comick > Uploaders Settings.
-
-> I've not used this section, so cannot comment on how to use it, so you will need to experiment. I have enabled "Enable Uploader filtering" as it may be needed to be on for step to above to work.
--->
 
 ### How do I remove scans in other languages? - MangaDex or MangaFire
 
