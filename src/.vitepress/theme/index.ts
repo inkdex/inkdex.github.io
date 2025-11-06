@@ -3,6 +3,7 @@ import type { Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";
 import { h } from "vue";
 import "./style.css";
+import ExtensionList from "./components/ExtensionList.vue";
 
 export default {
     extends: DefaultTheme,
@@ -15,6 +16,7 @@ export default {
         void app;
         void router;
         void siteData;
-        // ...
+        // Register custom components
+        app.component('ExtensionList', ExtensionList);
     },
 } satisfies Theme;
