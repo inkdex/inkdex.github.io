@@ -3,4 +3,6 @@
 
 # Extensions
 
-Coming soon!
+<ClientOnly>
+  <ExtensionList />
+</ClientOnly>
