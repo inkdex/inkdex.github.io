@@ -44,8 +44,6 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 
 ### Submitting a Good Bug Report
 
-> You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead use the GitHub [Security Advisory section][security-advisory-section] for sensitive bugs, check the [security guidelines][security-guidelines] for more info.
-
 Bug reports are tracked as [GitHub Issues][issue-tracker-bugs]. To submit a new bug report:
 
 1. Open a Bug Report [issue][new-bug-issue].
@@ -92,8 +90,6 @@ You may always make enhancement suggestions through the [Discord server support 
 [discord-server-support-channel]: https://discord.com/channels/965890377896845352/1348101489863688266
 [discord-server]: https://discord.gg/inkdex
 [issue-tracker-bugs]: https://github.com/inkdex/inkdex.github.io/issues?q=is%3Aissue+is%3Aopen+label%3Abug
-[security-advisory-section]: https://github.com/inkdex/inkdex.github.io/security/advisories
-[security-guidelines]: https://github.com/inkdex/inkdex.github.io?tab=security-ov-file
 [new-bug-issue]: https://github.com/inkdex/inkdex.github.io/issues/new?template=bug.yaml
 [issue-tracker-enhancements]: https://github.com/inkdex/inkdex.github.io/issues?q=label%3Aenhancement
 [new-enhancement-issue]: https://github.com/inkdex/inkdex.github.io/issues/new?template=enhancement.yaml
