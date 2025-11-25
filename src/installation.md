@@ -1,3 +1,6 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Copyright © 2025 Inkdex -->
+
 # Installation
 
 Paperback is a modern, ad-free reading app for Apple devices. It offers a smooth, distraction-free experience with features like offline reading, iCloud sync, and progress tracking.
@@ -28,3 +31,7 @@ Click the installation link below to add it to your Paperback app.
    :::
 
 The registry is hosted on GitHub and can be found [here](https://github.com/inkdex/extensions). It is completely automated, for more info you can join our [Discord server](https://discord.gg/inkdex) and ask us about it!
+
+## Extension List
+
+<ExtensionList />

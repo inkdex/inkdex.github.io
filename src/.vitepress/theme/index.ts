@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Copyright © 2025 Inkdex */
+
 // https://vitepress.dev/guide/custom-theme
 import type { Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";

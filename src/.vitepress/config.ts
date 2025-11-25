@@ -1,6 +1,9 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Copyright © 2025 Inkdex */
+
 import { defineConfig } from "vitepress";
 import headConfig from "./config/headConfig";
-import navConfig from "./config/navigation/nav";
+import navbarConfig from "./config/navigation/navbar";
 import sidebarConfig from "./config/navigation/sidebar";
 
 const hostname = "https://inkdex.github.io";
@@ -28,7 +31,7 @@ export default defineConfig({
             provider: "local",
         },
 
-        nav: navConfig,
+        nav: navbarConfig,
 
         sidebar: sidebarConfig,
 
@@ -38,7 +41,7 @@ export default defineConfig({
         },
 
         footer: {
-            copyright: "Copyright © 2025 Inkdex. GPLv3 Licensed.",
+            copyright: "Copyright © 2025 Inkdex. GPLv3 or Later Licensed.",
         },
     },
 });
