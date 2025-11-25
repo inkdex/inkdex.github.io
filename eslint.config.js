@@ -1,33 +1,28 @@
+// @ts-check
+
 import eslint from "@eslint/js";
+import pluginVue from "eslint-plugin-vue";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
-    {
-        extends: [eslint.configs.recommended],
-        files: ["**/*{.js,.ts}"],
-        languageOptions: {
-            ecmaVersion: "latest",
-            sourceType: "module",
-        },
-    },
+export default defineConfig(
+    eslint.configs.recommended,
     {
         extends: [...tseslint.configs.recommendedTypeChecked],
-        files: ["src/.vitepress/**/*.ts"],
+        files: ["**/*.ts"],
         languageOptions: {
-            parser: tseslint.parser,
             parserOptions: {
                 projectService: true,
-                tsconfigRootDir: import.meta.dirname,
             },
         },
         rules: {
-            "@typescript-eslint/require-await": "off",
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 { varsIgnorePattern: "^_" },
             ],
         },
     },
+    pluginVue.configs["flat/recommended"],
     {
         ignores: ["src/.vitepress/cache", "src/.vitepress/dist"],
     },

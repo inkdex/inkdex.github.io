@@ -1,4 +1,7 @@
 ---
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2025 Inkdex
+
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
@@ -14,7 +17,7 @@ hero:
           link: /installation
         - theme: alt
           text: Browse Extensions
-          link: /extensions
+          link: /extension-list
         - theme: alt
           text: Join the Discord Server
           link: https://discord.gg/inkdex
@@ -22,17 +25,22 @@ hero:
 features:
     - icon: 📖
       title: Community Guides
-      details: Explore guides written by community members to help you get started with Inkdex and Paperback.
+      details: Explore guides from community members, from setup to common workflows.
       link: /guides
       linkText: View Guides
+    - icon: ❓
+      title: Frequently Asked Questions
+      details: Quick answers to the questions people ask most often.
+      link: /faq
+      linkText: View FAQ
     - icon: 🤝
-      title: Get Support
-      details: The FAQ covers common questions—if you need more help, our support resources and community are here for you.
-      link: /faq-support#FAQ
-      linkText: Visit the FAQ
+      title: Support
+      details: Get help, check ongoing issues, or join discussions on GitHub or Discord.
+      link: /support
+      linkText: Get Support
     - icon: 🛠️
       title: Contribute & Build
-      details: Inkdex is built by volunteers. Learn how to create extensions, contribute code, or improve the site.
+      details: Inkdex is community-driven. Learn how to build extensions, improve the site, or help with project tooling.
       link: /development
-      linkText: Learn How to Contribute
+      linkText: Contribute
 ---

@@ -1,6 +1,6 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <!-- Copyright © 2025 Inkdex -->
 
-# Content Settings
+# Frequently Asked Questions (FAQ)
 
 Coming soon!
