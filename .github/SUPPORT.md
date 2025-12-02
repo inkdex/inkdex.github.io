@@ -8,11 +8,11 @@ Refer to the [Table of Contents](#table-of-contents) to explore the various type
 
 - [I Have a Question](#i-have-a-question)
 - [Reporting Bugs](#reporting-bugs)
-    - [Before Submitting a Bug Report](#before-submitting-a-bug-report)
-    - [Submitting a Good Bug Report](#submitting-a-good-bug-report)
+  - [Before Submitting a Bug Report](#before-submitting-a-bug-report)
+  - [Submitting a Good Bug Report](#submitting-a-good-bug-report)
 - [Suggesting Enhancements](#suggesting-enhancements)
-    - [Before Submitting an Enhancement Suggestion](#before-submitting-an-enhancement-suggestion)
-    - [Submitting a Good Enhancement Suggestion](#submitting-a-good-enhancement-suggestion)
+  - [Before Submitting an Enhancement Suggestion](#before-submitting-an-enhancement-suggestion)
+  - [Submitting a Good Enhancement Suggestion](#submitting-a-good-enhancement-suggestion)
 
 ## I Have a Question
 
@@ -38,9 +38,9 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 2. Make sure to search the internet to see if users outside of the GitHub Community or [Discord server][discord-server] have discussed the issue.
 3. To see if other users have experienced (and potentially already solved) the same bug you are having, check if there is not already a bug report existing for your bug in the [issue tracker][issue-tracker-bugs] or [Discord server support channel][discord-server-support-channel]. If there is, add a comment to the existing one instead of opening a new one.
 4. Collect the following information about the bug:
-    - Detailed description of the bug, including what you expected to actually happen.
-    - Steps to reproduce the bug.
-    - _(Optional)_ Videos, images, logs, or links.
+   - Detailed description of the bug, including what you expected to actually happen.
+   - Steps to reproduce the bug.
+   - _(Optional)_ Videos, images, logs, or links.
 
 ### Submitting a Good Bug Report
 

@@ -5,43 +5,46 @@ import { defineConfig } from "vitepress";
 import headConfig from "./config/headConfig";
 import navbarConfig from "./config/navigation/navbar";
 import sidebarConfig from "./config/navigation/sidebar";
+import socialLinks from "./config/navigation/socialLinks";
 
 const hostname = "https://inkdex.github.io";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-    title: "Inkdex",
-    description: "Community-Made Extensions for Paperback",
+  title: "Inkdex",
+  description: "Community-Made Extensions for Paperback",
 
-    head: headConfig,
+  head: headConfig,
 
-    cleanUrls: true,
+  cleanUrls: true,
 
-    lastUpdated: true,
+  lastUpdated: true,
 
-    sitemap: {
-        hostname,
+  sitemap: {
+    hostname,
+  },
+
+  themeConfig: {
+    // https://vitepress.dev/reference/default-theme-config
+    logo: "/logo-rounded.svg",
+
+    search: {
+      provider: "local",
     },
 
-    themeConfig: {
-        // https://vitepress.dev/reference/default-theme-config
-        logo: "/logo-rounded.svg",
+    nav: navbarConfig,
 
-        search: {
-            provider: "local",
-        },
+    socialLinks: socialLinks,
 
-        nav: navbarConfig,
+    sidebar: sidebarConfig,
 
-        sidebar: sidebarConfig,
-
-        editLink: {
-            pattern:
-                "https://github.com/inkdex/inkdex.github.io/tree/master/src/:path",
-        },
-
-        footer: {
-            copyright: "Copyright © 2025 Inkdex. GPLv3 or Later Licensed.",
-        },
+    editLink: {
+      pattern:
+        "https://github.com/inkdex/inkdex.github.io/tree/master/src/:path",
     },
+
+    footer: {
+      copyright: "Copyright © 2025 Inkdex. GPLv3 or Later Licensed.",
+    },
+  },
 });
