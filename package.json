@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint --fix",
-    "lint:check": "eslint",
-    "format": "prettier --write '**/*{.md,.yml,.yaml,.json,.js,.ts,.vue}'",
-    "format:check": "prettier --check '**/*{.md,.yml,.yaml,.json,.js,.ts,.vue}'",
+    "lint": "oxlint --type-aware --fix",
+    "lint:check": "oxlint --type-aware",
+    "format": "prettier --write '**/*{.md,.yml,.yaml,.json,.js,.ts,.vue}' --cache",
+    "format:check": "prettier --check '**/*{.md,.yml,.yaml,.json,.js,.ts,.vue}' --cache",
     "vue-tsc": "vue-tsc",
     "build": "vitepress build src",
     "preview": "vitepress preview src",
@@ -16,14 +16,11 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
-    "@types/eslint": "^9.6.1",
-    "eslint": "^9.39.1",
-    "eslint-plugin-vue": "^10.6.0",
     "husky": "^9.1.7",
+    "oxlint": "^1.31.0",
+    "oxlint-tsgolint": "^0.8.3",
     "prettier": "^3.6.2",
-    "typescript-eslint": "^8.46.3",
     "vitepress": "2.0.0-alpha.15",
     "vue": "^3.5.23",
     "vue-tsc": "^3.1.3"
