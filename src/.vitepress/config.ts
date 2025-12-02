@@ -47,4 +47,10 @@ export default defineConfig({
       copyright: "Copyright © 2025 Inkdex. GPLv3 or Later Licensed.",
     },
   },
+
+  markdown: {
+    image: {
+      lazyLoading: true,
+    },
+  },
 });
