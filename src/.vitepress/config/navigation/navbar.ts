@@ -2,6 +2,16 @@
 /* Copyright © 2025 Inkdex */
 
 export default [
-    { text: "Discord", link: "https://discord.gg/inkdex" },
-    { text: "GitHub", link: "https://github.com/inkdex" },
+  { text: "Home", link: "/" },
+  { text: "Installation", link: "/installation" },
+  { text: "Extension List", link: "/extension-list" },
+  {
+    text: "Docs",
+    items: [
+      { text: "Guides", link: "/guides" },
+      { text: "FAQ", link: "/faq" },
+      { text: "Support", link: "/support" },
+      { text: "Development", link: "/development" },
+    ],
+  },
 ];
