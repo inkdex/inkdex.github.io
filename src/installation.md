@@ -19,9 +19,11 @@ Extensions listed here are compatible with Paperback version 0.9. If you're usin
 
 The extension registry contains all extensions contributed by the Inkdex community.
 
-Click the installation link below to add it to your Paperback app.
+Click the button below to add it to your Paperback app.
 
-# [**Install**](<paperback://addRepo?displayName=Inkdex%20Extensions%20(0.9)&url=https%3A%2F%2Finkdex.github.io%2Fextensions%2F0.9%2Fstable>)
+<div align="center">
+  <a href="paperback://addRepo?displayName=Inkdex%20Extensions%20(0.9)&url=https%3A%2F%2Finkdex.github.io%2Fextensions%2F0.9%2Fstable" class="install-registry-btn btn-brand">Install Registry</a>
+</div>
 
 ::: details Install Manually
 
@@ -32,6 +34,4 @@ Click the installation link below to add it to your Paperback app.
 
 The registry is hosted on GitHub and can be found [here](https://github.com/inkdex/extensions). It is completely automated, for more info you can join our [Discord server](https://discord.gg/inkdex) and ask us about it!
 
-## Extension List
-
-<ExtensionList />
+For a more detailed browsing experience, visit our [extension list page](/extension-list) where you can search, filter, and install extensions individually.

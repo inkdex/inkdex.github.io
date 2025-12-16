@@ -16,6 +16,36 @@
   cursor: not-allowed;
 }
 
+/* Install Registry Button */
+.install-registry-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.05rem;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 1.5rem auto;
+  box-shadow: 0 4px 12px rgb(0 0 0 / .2);
+  min-height: 4rem;
+  color: var(--vp-button-brand-text) !important;
+  background: var(--vp-button-brand-bg);
+  border: none;
+  font-weight: 600;
+}
+.install-registry-btn:hover {
+  box-shadow: 0 6px 16px rgb(0 0 0 / .3);
+  background: var(--vp-button-brand-hover-bg);
+  color: var(--vp-button-brand-text) !important;
+}
+.install-registry-btn:active {
+  transform: scale(.95);
+  box-shadow: 0 2px 8px rgb(0 0 0 / .2);
+  background: var(--vp-button-brand-active-bg);
+}
+
 /* Input button shared styles */
 .input-btn {
   position: absolute;
