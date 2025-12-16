@@ -58,11 +58,11 @@ const DEFAULT_REPOS: Omit<CustomRepository, "displayName">[] = [
 export const getContentRatingColor = (rating: string): string => {
   switch (rating) {
     case "ADULT":
-      return "var(--vp-c-danger)";
+      return "var(--vp-c-red-1)";
     case "MATURE":
-      return "var(--vp-c-warning)";
+      return "var(--vp-c-yellow-1)";
     case "SAFE":
-      return "var(--vp-c-success)";
+      return "var(--vp-c-green-1)";
     default:
       return "var(--vp-c-text-2)";
   }
@@ -71,11 +71,11 @@ export const getContentRatingColor = (rating: string): string => {
 export const getContentRatingBg = (rating: string): string => {
   switch (rating) {
     case "ADULT":
-      return "var(--vp-c-danger-soft)";
+      return "var(--vp-c-red-soft)";
     case "MATURE":
-      return "var(--vp-c-warning-soft)";
+      return "var(--vp-c-yellow-soft)";
     case "SAFE":
-      return "var(--vp-c-success-soft)";
+      return "var(--vp-c-green-soft)";
     default:
       return "var(--vp-c-bg-soft)";
   }

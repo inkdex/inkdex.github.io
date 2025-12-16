@@ -44,6 +44,7 @@ const negatedLanguages = ref<Set<string>>(new Set());
 const selectedLabels = ref<Set<string>>(new Set());
 const negatedLabels = ref<Set<string>>(new Set());
 const badgeFilterMode = ref<"any" | "all">("any");
+const serviceFilterMode = ref<"any" | "all">("any");
 const selectedServices = ref<Set<string>>(new Set());
 const negatedServices = ref<Set<string>>(new Set());
 const filtersExpanded = ref(false);
@@ -166,6 +167,21 @@ const availableLabels = computed(() => {
   return Array.from(labels).sort();
 });
 
+const getBadgeColors = (label: string) => {
+  for (const ext of extensions.value) {
+    if (ext.metadata?.badges) {
+      const badge = ext.metadata.badges.find((b) => b.label === label);
+      if (badge) {
+        return {
+          textColor: badge.textColor,
+          backgroundColor: badge.backgroundColor,
+        };
+      }
+    }
+  }
+  return { textColor: "#8b5cf6", backgroundColor: "#8b5cf626" };
+};
+
 const filteredExtensions = computed(() => {
   return extensions.value.filter((extension) => {
     const matchesSearch =
@@ -227,18 +243,35 @@ const filteredExtensions = computed(() => {
     const matchesService =
       (selectedServices.value.size === 0 ||
         (extension.metadata?.capabilities &&
-          Array.from(selectedServices.value).every((service) => {
-            if (!extension.metadata?.capabilities) return false;
-            if (service === "Content Service")
-              return hasChapterProviding(extension.metadata.capabilities);
-            if (service === "Tracker Service")
-              return hasMangaProgressProviding(extension.metadata.capabilities);
-            if (service === "Cloudflare")
-              return hasCloudflareBypassProviding(
-                extension.metadata.capabilities,
-              );
-            return false;
-          }))) &&
+          (serviceFilterMode.value === "all"
+            ? Array.from(selectedServices.value).every((service) => {
+                if (!extension.metadata?.capabilities) return false;
+                if (service === "Content Service")
+                  return hasChapterProviding(extension.metadata.capabilities);
+                if (service === "Tracker Service")
+                  return hasMangaProgressProviding(
+                    extension.metadata.capabilities,
+                  );
+                if (service === "Cloudflare")
+                  return hasCloudflareBypassProviding(
+                    extension.metadata.capabilities,
+                  );
+                return false;
+              })
+            : Array.from(selectedServices.value).some((service) => {
+                if (!extension.metadata?.capabilities) return false;
+                if (service === "Content Service")
+                  return hasChapterProviding(extension.metadata.capabilities);
+                if (service === "Tracker Service")
+                  return hasMangaProgressProviding(
+                    extension.metadata.capabilities,
+                  );
+                if (service === "Cloudflare")
+                  return hasCloudflareBypassProviding(
+                    extension.metadata.capabilities,
+                  );
+                return false;
+              })))) &&
       !Array.from(negatedServices.value).some((service) => {
         if (!extension.metadata?.capabilities) return false;
         if (service === "Content Service")
@@ -340,8 +373,6 @@ const clearAllFilters = () => {
   negatedLanguages.value = new Set();
   selectedLabels.value = new Set();
   negatedLabels.value = new Set();
-  selectedSources.value = new Set();
-  negatedSources.value = new Set();
   selectedRatings.value = new Set();
   negatedRatings.value = new Set();
   selectedServices.value = new Set();
@@ -659,6 +690,21 @@ const handleAddRepoFromUrl = async () => {
           <div class="filter-group">
             <div class="filter-header">
               <span class="filter-label">Services</span>
+              <button
+                class="badge-mode-toggle"
+                :title="
+                  serviceFilterMode === 'any'
+                    ? 'Match ANY selected service (OR)'
+                    : 'Match ALL selected services (AND)'
+                "
+                @click="
+                  serviceFilterMode =
+                    serviceFilterMode === 'any' ? 'all' : 'any'
+                "
+              >
+                <span v-if="serviceFilterMode === 'any'">OR</span>
+                <span v-else>AND</span>
+              </button>
             </div>
             <div class="filter-chips">
               <button
@@ -726,6 +772,15 @@ const handleAddRepoFromUrl = async () => {
                   active: selectedLabels.has(label),
                   negated: negatedLabels.has(label),
                 }"
+                :style="
+                  selectedLabels.has(label)
+                    ? {
+                        backgroundColor: getBadgeColors(label).backgroundColor,
+                        color: getBadgeColors(label).textColor,
+                        borderColor: getBadgeColors(label).textColor,
+                      }
+                    : {}
+                "
                 @click="toggleLabel(label)"
               >
                 {{ label }}
@@ -766,9 +821,12 @@ const handleAddRepoFromUrl = async () => {
               <span class="filter-label">Installed Repositories</span>
             </div>
             <button
-              v-if="selectedSources.size > 0"
+              v-if="selectedSources.size > 0 || negatedSources.size > 0"
               class="btn-secondary clear-filters-btn repos-clear-btn"
-              @click="selectedSources = new Set()"
+              @click="
+                selectedSources = new Set();
+                negatedSources = new Set();
+              "
             >
               Clear Filters
             </button>
@@ -858,12 +916,20 @@ const handleAddRepoFromUrl = async () => {
             v-for="lang in selectedLanguages"
             :key="`lang-${lang}`"
             class="filter-tag language-tag"
-            >{{ lang }}</span
           >
+            <template v-if="getLanguageEmoji(lang)"
+              >{{ getLanguageEmoji(lang) }}&nbsp;</template
+            >{{ getLanguageName(lang) }}
+          </span>
           <span
             v-for="label in selectedLabels"
             :key="`label-${label}`"
             class="filter-tag label-tag"
+            :style="{
+              backgroundColor: getBadgeColors(label).backgroundColor,
+              color: getBadgeColors(label).textColor,
+              borderColor: getBadgeColors(label).textColor,
+            }"
             >{{ label }}</span
           >
           <span
@@ -894,12 +960,20 @@ const handleAddRepoFromUrl = async () => {
             v-for="lang in negatedLanguages"
             :key="`negated-lang-${lang}`"
             class="filter-tag language-tag negated-tag"
-            >{{ lang }}</span
           >
+            <template v-if="getLanguageEmoji(lang)"
+              >{{ getLanguageEmoji(lang) }}&nbsp;</template
+            >{{ getLanguageName(lang) }}
+          </span>
           <span
             v-for="label in negatedLabels"
             :key="`negated-label-${label}`"
             class="filter-tag label-tag negated-tag"
+            :style="{
+              backgroundColor: getBadgeColors(label).backgroundColor,
+              color: getBadgeColors(label).textColor,
+              borderColor: getBadgeColors(label).textColor,
+            }"
             >{{ label }}</span
           >
           <span
@@ -947,6 +1021,9 @@ const handleAddRepoFromUrl = async () => {
                       extension.metadata.contentRating,
                     ),
                     backgroundColor: getContentRatingBg(
+                      extension.metadata.contentRating,
+                    ),
+                    borderColor: getContentRatingColor(
                       extension.metadata.contentRating,
                     ),
                   }"
@@ -1007,6 +1084,7 @@ const handleAddRepoFromUrl = async () => {
                 :style="{
                   color: badge.textColor,
                   backgroundColor: badge.backgroundColor,
+                  borderColor: badge.textColor,
                 }"
               >
                 {{ badge.label }}
