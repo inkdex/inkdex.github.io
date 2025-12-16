@@ -89,6 +89,9 @@ watch(
                   backgroundColor: getContentRatingBg(
                     extension.metadata.contentRating,
                   ),
+                  borderColor: getContentRatingColor(
+                    extension.metadata.contentRating,
+                  ),
                 }"
               >
                 {{ formatRating(extension.metadata.contentRating) }}
@@ -157,6 +160,7 @@ watch(
               :style="{
                 color: badge.textColor,
                 backgroundColor: badge.backgroundColor,
+                borderColor: badge.textColor,
               }"
             >
               {{ badge.label }}
