@@ -22,7 +22,7 @@
     "oxlint-tsgolint": "^0.9.1",
     "prettier": "^3.7.4",
     "vitepress": "2.0.0-alpha.15",
-    "vue": "^3.5.23",
+    "vue": "^3.5.25",
     "vue-tsc": "^3.1.8"
   }
 }
