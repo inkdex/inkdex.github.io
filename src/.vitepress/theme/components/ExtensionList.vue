@@ -48,6 +48,7 @@ const serviceFilterMode = ref<"any" | "all">("any");
 const selectedServices = ref<Set<string>>(new Set());
 const negatedServices = ref<Set<string>>(new Set());
 const filtersExpanded = ref(false);
+const showOnlySelected = ref(false);
 
 const availableRatings = ["SAFE", "MATURE", "ADULT"];
 const availableServices = ["Content Service", "Tracker Service", "Cloudflare"];
@@ -283,13 +284,18 @@ const filteredExtensions = computed(() => {
         return false;
       });
 
+    const matchesSelection =
+      !showOnlySelected.value ||
+      selectedExtensions.value.has(`${extension.source}-${extension.name}`);
+
     return (
       matchesSearch &&
       matchesRating &&
       matchesSource &&
       matchesLanguage &&
       matchesLabel &&
-      matchesService
+      matchesService &&
+      matchesSelection
     );
   });
 });
@@ -397,6 +403,9 @@ const toggleExtension = (extension: Extension) => {
   const key = `${extension.source}-${extension.name}`;
   if (selectedExtensions.value.has(key)) {
     selectedExtensions.value.delete(key);
+    if (selectedExtensions.value.size === 0) {
+      showOnlySelected.value = false;
+    }
   } else {
     selectedExtensions.value.add(key);
   }
@@ -639,6 +648,16 @@ const handleAddRepoFromUrl = async () => {
               <span class="expand-icon" :class="{ expanded: showRepoManager }"
                 >▼</span
               >
+            </button>
+
+            <button
+              v-if="selectedExtensions.size > 0"
+              class="action-btn"
+              :class="{ active: showOnlySelected }"
+              @click="showOnlySelected = !showOnlySelected"
+            >
+              <span class="btn-text">Only Show Selected</span>
+              <span class="filter-count">{{ selectedExtensions.size }}</span>
             </button>
           </div>
         </div>
