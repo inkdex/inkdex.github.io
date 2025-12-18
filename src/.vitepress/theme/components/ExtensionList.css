@@ -450,12 +450,6 @@
 .extension-card.selected {
   border-color: var(--vp-c-brand);
   box-shadow: 0 0 0 1px var(--vp-c-brand), 0 0 12px 3px var(--vp-c-brand-soft);
-  background: var(--vp-c-brand-dimm);
-}
-.extension-card.selected .version-badge,
-.extension-card.selected .details-btn {
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-2);
 }
 
 .extension-header {
