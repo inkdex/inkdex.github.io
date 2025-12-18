@@ -22,7 +22,7 @@ Inkdex is a community-driven project that develops and maintains these extension
 
 The extension registry contains all extensions maintained by the Inkdex community.
 
-Click the installation link below to add it to your Paperback app.
+Click the installation button below to add it to your Paperback app.
 
 <div align="center">
   <a href="paperback://addRepo?displayName=Inkdex%20Extensions%20(0.9)&url=https%3A%2F%2Finkdex.github.io%2Fextensions%2F0.9%2Fstable" class="install-registry-btn btn-brand">Install Registry</a>
@@ -31,8 +31,10 @@ Click the installation link below to add it to your Paperback app.
 ::: details Install Manually
 
 1. Open the Paperback app.
-2. Go to "Settings" > "Extensions" > "+" > "Source Repository".
-3. Paste `https://inkdex.github.io/extensions/0.9/stable` into the Repository Base URL field.
+2. Tap the _cog_ to open **_Settings_**.
+3. Tap **_Extensions_**.
+4. Tap _+_ and choose **_Source Repository_**.
+5. Paste `https://inkdex.github.io/extensions/0.9/stable` into the **Repository Base URL** field.
 
 :::
 
