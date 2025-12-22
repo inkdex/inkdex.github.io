@@ -10,10 +10,7 @@ import {
   hasMangaProgressProviding,
   type Extension,
 } from "../lib/extensions";
-
-const formatRating = (rating: string) => {
-  return rating.charAt(0) + rating.slice(1).toLowerCase();
-};
+import { formatRating } from "../lib/uiUtils";
 
 interface Props {
   extension: Extension | null;
