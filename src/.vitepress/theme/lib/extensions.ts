@@ -215,13 +215,13 @@ export const buildBaseUrl = (repo: {
   return `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable`;
 };
 
-// Cache for API responses (1 minute TTL)
-const CACHE_TTL = 60 * 1000; // 1 minute in milliseconds
+// Cache for API responses with repo count * minutes TTL
+const MINUTE_MS = 60 * 1000; // 1 minute in milliseconds
 const CACHE_STORAGE_KEY = "inkdex_api_cache";
 
 interface CacheEntry {
   data: any;
-  timestamp: number;
+  fetchTime: number; // When the data was fetched
 }
 
 interface CacheStorage {
@@ -247,25 +247,56 @@ const saveCache = (cache: CacheStorage): void => {
   }
 };
 
-const getCachedData = (key: string): any | null => {
+// Function to get cached data with information about expiration status
+const getCachedDataWithStatus = (
+  key: string,
+  allRepos: CustomRepository[] = [],
+): { data: any | null; isExpired: boolean } => {
   const cache = loadCache();
   const cached = cache[key];
-  if (!cached) return null;
+  if (!cached) return { data: null, isExpired: false };
 
-  const isExpired = Date.now() - cached.timestamp > CACHE_TTL;
+  // Calculate TTL based on current repo count
+  const ttlMs = calculateRepoBasedTtl(allRepos);
+  const isExpired = Date.now() - cached.fetchTime > ttlMs;
+
   if (isExpired) {
+    return { data: cached.data, isExpired: true }; // Return expired data but indicate it's expired
+  }
+
+  return { data: cached.data, isExpired: false };
+};
+
+// Function to get only non-expired cached data
+const getCachedData = (
+  key: string,
+  allRepos: CustomRepository[] = [],
+): any | null => {
+  const result = getCachedDataWithStatus(key, allRepos);
+  if (result.isExpired) {
+    // Only remove expired cache when explicitly checked for non-expired data
+    const cache = loadCache();
     delete cache[key];
     saveCache(cache);
     return null;
   }
-
-  return cached.data;
+  return result.data;
 };
 
 const setCachedData = (key: string, data: any): void => {
   const cache = loadCache();
-  cache[key] = { data, timestamp: Date.now() };
+  cache[key] = { data, fetchTime: Date.now() };
   saveCache(cache);
+};
+
+// Calculate TTL based on repo count in minutes to stay within 60 req/hour limit
+const calculateRepoBasedTtl = (allRepos: CustomRepository[]): number => {
+  // Use the number of repos as cache TTL in minutes to prevent over-fetching
+  // If there are n repos, cache for n minutes to avoid exceeding 60 req/hour limit
+  const repoCount = allRepos.length;
+  // At least 1 minute to prevent spamming GitHub
+  const minutes = Math.max(repoCount, 1);
+  return minutes * MINUTE_MS;
 };
 
 // Capability flags (SourceIntents)
@@ -278,7 +309,7 @@ export const hasCapability = (
   flag: number,
 ): boolean => {
   if (Array.isArray(capabilities)) {
-    return capabilities.includes(flag);
+    return capabilities.indexOf(flag) !== -1;
   }
   return (capabilities & flag) === flag;
 };
@@ -302,9 +333,20 @@ export const loadCustomRepos = (): CustomRepository[] => {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
     try {
-      return JSON.parse(stored);
+      const repos = JSON.parse(stored);
+      // Filter out any malformed repositories
+      return repos.filter(
+        (repo: CustomRepository) =>
+          repo &&
+          repo.owner &&
+          repo.name &&
+          repo.owner.length > 0 &&
+          repo.name.length > 0,
+      );
     } catch (e) {
       console.error("Failed to parse custom repos from localStorage:", e);
+      // Clear corrupted data
+      localStorage.removeItem(STORAGE_KEY);
       return [];
     }
   }
@@ -316,51 +358,58 @@ export const saveCustomRepos = (repos: CustomRepository[]): void => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(repos));
 };
 
-export const fetchVersioningJson = async (repo: {
-  owner: string;
-  name: string;
-  branch: string;
-}): Promise<{ sources: ExtensionMetadata[] } | null> => {
+// Enhanced error handling for API calls
+export const fetchVersioningJson = async (
+  repo: {
+    owner: string;
+    name: string;
+    branch: string;
+  },
+  allRepos: CustomRepository[] = [],
+): Promise<{ sources: ExtensionMetadata[] } | null> => {
   const cacheKey = `versioning:${repo.owner}/${repo.name}/${repo.branch}`;
-  const cached = getCachedData(cacheKey);
-  if (cached) return cached;
 
-  try {
-    const response = await fetch(
-      `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable/versioning.json`,
-    );
-    if (!response.ok) return null;
-    const data = await response.json();
-    setCachedData(cacheKey, data);
-    return data;
-  } catch (e) {
-    console.warn(
-      `Failed to fetch metadata from ${repo.owner}/${repo.name}:`,
-      e,
-    );
-    return null;
+  // First, check if there's any cached data (expired or not) to use as backup
+  const expiredCacheResult = getCachedDataWithStatus(cacheKey, allRepos);
+  const hasExpiredCache =
+    expiredCacheResult.isExpired && expiredCacheResult.data !== null;
+  const expiredCacheData = hasExpiredCache ? expiredCacheResult.data : null;
+
+  // Get non-expired cached data (this removes expired cache)
+  const cached = getCachedData(cacheKey, allRepos);
+
+  // If cache exists (and is not expired), return it
+  if (cached) {
+    return cached;
   }
-};
 
-export const fetchRepoContents = async (repo: {
-  owner: string;
-  name: string;
-  branch: string;
-}): Promise<GitHubFile[] | null> => {
-  const cacheKey = `contents:${repo.owner}/${repo.name}/${repo.branch}`;
-  const cached = getCachedData(cacheKey);
-  if (cached) return cached;
+  // Cache is expired or doesn't exist, fetch from GitHub
+  const url = `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable/versioning.json`;
 
   try {
-    const response = await fetch(
-      `https://api.github.com/repos/${repo.owner}/${repo.name}/contents/0.9/stable?ref=${repo.branch}`,
-    );
-    if (!response.ok) return null;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
     const data = await response.json();
     setCachedData(cacheKey, data);
     return data;
-  } catch (e) {
-    console.warn(`Failed to fetch from ${repo.owner}/${repo.name}:`, e);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error(
+      `Failed to fetch metadata from ${repo.owner}/${repo.name}:`,
+      errorMessage,
+    );
+
+    // If fetch fails and we have expired cache, return it
+    if (expiredCacheData) {
+      console.warn(`Using expired cache for ${repo.owner}/${repo.name}`);
+      return expiredCacheData;
+    }
+
     return null;
   }
 };
@@ -416,10 +465,7 @@ export const useExtensions = () => {
     return [...defaultWithDisplay, ...customRepos.value];
   };
 
-  const fetchAllExtensions = async (
-    includeContents = true,
-    showLoading = true,
-  ): Promise<void> => {
+  const fetchAllExtensions = async (showLoading = true): Promise<void> => {
     if (showLoading) {
       loading.value = true;
     }
@@ -429,7 +475,7 @@ export const useExtensions = () => {
       const allRepos = getAllRepos();
 
       const metadataPromises = allRepos.map(async (repo) => {
-        const data = await fetchVersioningJson(repo);
+        const data = await fetchVersioningJson(repo, allRepos);
         return data ? { repo, data } : null;
       });
 
@@ -437,69 +483,25 @@ export const useExtensions = () => {
         (r) => r !== null,
       );
 
-      let contentsResults: Array<{
-        repo: CustomRepository;
-        data: GitHubFile[];
-      }> = [];
-      if (includeContents) {
-        const contentsPromises = allRepos.map(async (repo) => {
-          const data = await fetchRepoContents(repo);
-          return data ? { repo, data } : null;
-        });
-        contentsResults = (await Promise.all(contentsPromises)).filter(
-          (r) => r !== null,
-        ) as Array<{ repo: CustomRepository; data: GitHubFile[] }>;
-      }
-
       const allExtensions: Extension[] = [];
 
       for (const metaResult of metadataResults) {
         if (!metaResult) continue;
         const { repo, data } = metaResult;
 
-        const metadataMap = new Map(
-          data.sources.map((source: ExtensionMetadata) => [source.id, source]),
-        );
-
-        if (includeContents) {
-          const contentsResult = contentsResults.find(
-            (c) => c.repo.id === repo.id,
-          );
-          if (contentsResult) {
-            const repoExtensions = contentsResult.data
-              .filter((item: GitHubFile) => item.type === "dir")
-              .map((item: GitHubFile) => {
-                const extensionMetadata = metadataMap.get(item.name) as
-                  | ExtensionMetadata
-                  | undefined;
-                return {
-                  name: item.name,
-                  source: repo.id,
-                  url: `${buildBaseUrl(repo)}/${item.name}/index.js`,
-                  html_url: item.html_url,
-                  metadata: extensionMetadata,
-                  repoId: repo.id,
-                  iconUrl: extensionMetadata?.icon
-                    ? buildIconUrl(repo, item.name, extensionMetadata.icon)
-                    : "https://paperback.moe/pb-placeholder.png",
-                };
-              });
-            allExtensions.push(...repoExtensions);
-          }
-        } else {
-          for (const source of data.sources) {
-            allExtensions.push({
-              name: source.id,
-              source: repo.id,
-              url: `${buildBaseUrl(repo)}/${source.id}/index.js`,
-              html_url: `https://github.com/${repo.owner}/${repo.name}/tree/${repo.branch}/0.9/stable/${source.id}`,
-              metadata: source,
-              repoId: repo.id,
-              iconUrl: source.icon
-                ? buildIconUrl(repo, source.id, source.icon)
-                : "https://paperback.moe/pb-placeholder.png",
-            });
-          }
+        // Always use versioning.json data directly - no need to fetch contents separately
+        for (const source of data.sources) {
+          allExtensions.push({
+            name: source.id,
+            source: repo.id,
+            url: `${buildBaseUrl(repo)}/${source.id}/index.js`,
+            html_url: `https://github.com/${repo.owner}/${repo.name}/tree/${repo.branch}/0.9/stable/${source.id}`,
+            metadata: source,
+            repoId: repo.id,
+            iconUrl: source.icon
+              ? buildIconUrl(repo, source.id, source.icon)
+              : "https://paperback.moe/pb-placeholder.png",
+          });
         }
       }
 
@@ -524,8 +526,10 @@ export const useExtensions = () => {
 
     const url = repoUrl.trim();
 
-    if (url.includes("github.com/")) {
-      const match = url.match(
+    if (url.indexOf("github.com/") !== -1) {
+      // Remove protocol prefix if present to avoid parsing issues
+      const cleanUrl = url.replace(/^https?:\/\//, "");
+      const match = cleanUrl.match(
         // eslint-disable-next-line
         /github\.com\/([^\/]+)\/([^\/]+)(?:\/tree\/([^\/]+))?/,
       );
@@ -534,7 +538,7 @@ export const useExtensions = () => {
         name = match[2] || "";
         if (match[3]) branch = match[3];
       }
-    } else if (url.includes("/")) {
+    } else if (url.indexOf("/") !== -1) {
       const parts = url.split("/");
       if (parts.length >= 2) {
         owner = parts[0] || "";
@@ -561,7 +565,8 @@ export const useExtensions = () => {
     const id = `${owner}-${name}`;
     const existing = customRepos.value.find((r) => r.id === id);
     if (existing) {
-      return { success: false, error: "This repository is already added" };
+      // Duplicate found, return success (treat as successful no-op)
+      return { success: true };
     }
 
     const repo: CustomRepository = {
@@ -578,9 +583,12 @@ export const useExtensions = () => {
     return { success: true };
   };
 
-  const removeCustomRepo = (repoId: string): void => {
+  const removeCustomRepo = async (repoId: string): Promise<void> => {
     customRepos.value = customRepos.value.filter((r) => r.id !== repoId);
     saveCustomRepos(customRepos.value);
+
+    // Re-fetch extensions to remove extensions from the removed repo
+    await fetchAllExtensions(false);
   };
 
   return {
