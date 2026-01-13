@@ -1,3 +1,6 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Copyright © 2026 Inkdex -->
+
 <script setup lang="ts">
 import { useRouter } from "vitepress";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
