@@ -1,3 +1,6 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Copyright © 2026 Inkdex -->
+
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 import ExtensionCard from "./ExtensionCard.vue";
