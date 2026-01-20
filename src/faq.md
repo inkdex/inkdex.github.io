@@ -65,18 +65,6 @@ for instructions on how to change this.
 
 </details>
 
-### Are there any Western Comic extensions?
-
-<details>
-  <summary>Answer</summary>
-
-Currently, Inkdex does not provide any Western Comic extensions. However, the Batcave,
-ReadAllComics, and ReadComicsOnlineRu extensions can be found in other repositories
-not maintained by Inkdex. Head over to our [Discord server](https://discord.gg/inkdex)
-for more information!
-
-</details>
-
 ### What are the best extensions to install?
 
 <details>
@@ -98,13 +86,27 @@ on this website.
 
 </details>
 
+### Are there any Western Comic extensions?
+
+<details>
+  <summary>Answer</summary>
+
+Currently, Inkdex does not provide any Western Comic extensions. However, the Batcave,
+ReadAllComics, and ReadComicsOnlineRu extensions can be found in other repositories
+not maintained by Inkdex. Head over to our [Discord server](https://discord.gg/inkdex)
+for more information!
+
+</details>
+
 ### What extension has title X?
 
 <details>
   <summary>Answer</summary>
 
-We don't know this either. We recommend searching the internet for your title to
-find which site hosts it, and then checking if that site has an extension.
+We don't know this either. You can check other sites like [kuroiru.co](https://kuroiru.co/manga/explore)
+which try to answer this question as best as possible. Alternatively you can search
+for your title on the internet to find which site hosts it, and then checking if
+that site has an extension.
 
 </details>
 
@@ -120,24 +122,52 @@ and a reason as to why it should be turned into an extension.
 
 </details>
 
-### Why has my request for an extension not been added yet?
+### Are extension requests guaranteed to be fulfilled?
 
 <details>
   <summary>Answer</summary>
 
-Extension requests are never certain to be fulfilled. The requests are there to
-help extension developers discover wanted extensions.
+No. Requests and their upvotes serve only as a guide to help developers discover
+which extensions the community wants most.
 
-If you want your extension to be added, your best chances are:
+</details>
 
-- Request an extension that is original and qualitative.
-- Build it yourself (check our [Extension Development Guide](/development/extensions);
-  coding experience is good to have but not required).
+### How can I improve the chances of my request being picked up?
 
-Most titles are already available through existing extensions. Creating a new extension
-simply to avoid waiting a short time for another site to update is not worth it
-for most developers. Since there are only a few active extension developers, foreign
-language extensions are less likely to get added.
+<details>
+  <summary>Answer</summary>
+
+Your request is much more likely to be selected if it meets the following criteria:
+
+- **Uniqueness:** The website offers content not available elsewhere.
+- **Quality:** The website is reliable, fast, and has good image quality.
+- **Justification:** The description clearly states why the website should be implemented.
+
+</details>
+
+### Why hasn't my request been picked up yet?
+
+<details>
+  <summary>Answer</summary>
+
+Common reasons for a request being overlooked or ignored include:
+
+- **Redundancy:** Most titles are already available via existing extensions. Developers
+  rarely build new extensions for websites which have little new to offer.
+- **Language Barriers:** We have a small team of active developers who primarily
+  speak English, so non-English websites are less likely to be implemented.
+- **Justification:** The request description did not provide a clear reason why
+  the website should be added.
+
+</details>
+
+### Can I build the extension myself?
+
+<details>
+  <summary>Answer</summary>
+
+Yes! The fastest way to get an extension added is to create it yourself. Check out
+our [extension development guide](https://inkdex.github.io/development/extensions) to get started.
 
 </details>
 
