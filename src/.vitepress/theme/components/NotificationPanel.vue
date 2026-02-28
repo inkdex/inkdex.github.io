@@ -77,9 +77,11 @@ const removeNotification = (id: string) => {
   position: fixed;
   top: 20px;
   right: 20px;
+  left: 20px;
   z-index: 9999;
   pointer-events: none;
   max-width: 400px;
+  margin-left: auto;
 }
 
 .notification {
@@ -90,31 +92,46 @@ const removeNotification = (id: string) => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(10px);
   border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg-soft);
   color: var(--vp-c-text-1);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.dark .notification {
+  background: rgba(27, 27, 27, 0.35);
+}
+
+:root:not(.dark) .notification {
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .notification-success {
-  background: var(--vp-c-bg-soft);
+  backdrop-filter: blur(10px);
   color: var(--vp-c-text-1);
   border-color: var(--vp-c-border);
 }
 
 .notification-error {
-  background: var(--vp-c-danger-soft);
-  color: var(--vp-c-danger);
-  border-color: var(--vp-c-danger);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+  color: #ffffff;
+  border-color: var(--vp-c-danger-1);
+}
+
+.dark .notification-error {
+  background: rgba(255, 57, 57, 0.35);
+}
+
+:root:not(.dark) .notification-error {
+  background: rgba(200, 30, 30, 0.65);
 }
 
 .notification-warning {
-  background: var(--vp-c-yellow-soft);
+  backdrop-filter: blur(10px);
   color: var(--vp-c-yellow-1);
   border-color: var(--vp-c-yellow-1);
 }
 
 .notification-info {
-  background: var(--vp-c-bg-soft);
+  backdrop-filter: blur(10px);
   color: var(--vp-c-text-1);
   border-color: var(--vp-c-border);
 }
@@ -140,6 +157,7 @@ const removeNotification = (id: string) => {
 
 .notification-title {
   flex: 1;
+  min-width: 0;
 }
 
 .notification-close {
