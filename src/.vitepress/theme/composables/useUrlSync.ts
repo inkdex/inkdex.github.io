@@ -179,14 +179,27 @@ export const useUrlSync = (
       });
     }
 
-    // Parse source (repository) filters
+    // Parse source (repository) filters - expect owner/repo format
     const sourceParam = urlParams.get("r");
     if (sourceParam) {
       const providedSources = sourceParam
         .split(",")
         .map((source) => source.trim())
         .filter((source) => source.length > 0);
-      state.selectedSources.value = new Set(providedSources);
+
+      const sourceIds: string[] = [];
+      for (const source of providedSources) {
+        if (source === "inkdex") {
+          sourceIds.push("inkdex");
+        } else if (source.includes("/")) {
+          // URL params are automatically decoded, use directly as ID
+          const existing = customRepos.value.find((r) => r.id === source);
+          if (existing) {
+            sourceIds.push(source);
+          }
+        }
+      }
+      state.selectedSources.value = new Set(sourceIds);
     }
 
     const notSourceParam = urlParams.get("nr");
@@ -195,9 +208,22 @@ export const useUrlSync = (
         .split(",")
         .map((source) => source.trim())
         .filter((source) => source.length > 0);
-      providedSources.forEach((source) => {
-        if (!state.selectedSources.value.has(source)) {
-          state.negatedSources.value.add(source);
+
+      const negatedIds: string[] = [];
+      for (const source of providedSources) {
+        if (source === "inkdex") {
+          negatedIds.push("inkdex");
+        } else if (source.includes("/")) {
+          // URL params are automatically decoded, use directly as ID
+          const existing = customRepos.value.find((r) => r.id === source);
+          if (existing) {
+            negatedIds.push(source);
+          }
+        }
+      }
+      negatedIds.forEach((id) => {
+        if (!state.selectedSources.value.has(id)) {
+          state.negatedSources.value.add(id);
         }
       });
     }
@@ -237,43 +263,35 @@ export const useUrlSync = (
 
     const urlParams = new URLSearchParams();
 
-    // Add positive source filters (selected repositories) - use IDs only
+    // Add positive source filters (selected repositories) - use owner/repo format
     if (state.selectedSources.value.size > 0) {
-      const repoIds = Array.from(state.selectedSources.value);
-      urlParams.set("r", repoIds.join(","));
-    }
-
-    // Add negated source filters - use IDs only
-    if (state.negatedSources.value.size > 0) {
-      const repoIds = Array.from(state.negatedSources.value);
-      urlParams.set("nr", repoIds.join(","));
-    }
-
-    // Add ar parameter with URLs for non-inkdex repos in r and nr
-    const nonInkdexRepos = new Set(
-      [...state.selectedSources.value, ...state.negatedSources.value].filter(
-        (id) => id !== "inkdex",
-      ),
-    );
-
-    if (nonInkdexRepos.size > 0) {
-      const arUrls: string[] = [];
-      for (const repoId of nonInkdexRepos) {
+      const repoIdentifiers: string[] = [];
+      for (const repoId of state.selectedSources.value) {
         const repo = customRepos.value.find((r) => r.id === repoId);
-        if (
-          repo &&
-          repo.owner &&
-          repo.name &&
-          repo.owner.length > 0 &&
-          repo.name.length > 0
-        ) {
-          arUrls.push(
-            `https://github.com/${repo.owner}/${repo.name}${repo.branch !== "gh-pages" ? `/tree/${repo.branch}` : ""}`,
-          );
+        if (repo && repo.owner && repo.name) {
+          repoIdentifiers.push(`${repo.owner}/${repo.name}`);
+        } else if (repoId === "inkdex") {
+          repoIdentifiers.push("inkdex");
         }
       }
-      if (arUrls.length > 0) {
-        urlParams.set("ar", arUrls.join(","));
+      if (repoIdentifiers.length > 0) {
+        urlParams.set("r", repoIdentifiers.join(","));
+      }
+    }
+
+    // Add negated source filters - use owner/repo format
+    if (state.negatedSources.value.size > 0) {
+      const repoIdentifiers: string[] = [];
+      for (const repoId of state.negatedSources.value) {
+        const repo = customRepos.value.find((r) => r.id === repoId);
+        if (repo && repo.owner && repo.name) {
+          repoIdentifiers.push(`${repo.owner}/${repo.name}`);
+        } else if (repoId === "inkdex") {
+          repoIdentifiers.push("inkdex");
+        }
+      }
+      if (repoIdentifiers.length > 0) {
+        urlParams.set("nr", repoIdentifiers.join(","));
       }
     }
 

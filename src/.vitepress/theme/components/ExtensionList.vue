@@ -31,6 +31,7 @@ const {
   customRepos,
   loadRepos,
   fetchAllExtensions,
+  fetchExtensionsForRepo,
   addCustomRepo,
   removeCustomRepo,
 } = useExtensions();
@@ -200,7 +201,6 @@ const handleAddRepo = async () => {
     const result = await addCustomRepo(newRepoUrl.value);
 
     if (!result.success) {
-      // Silently fail if repository is already added
       if (result.error?.includes("already added")) {
         newRepoUrl.value = "";
         checkingRepo.value = false;
@@ -211,23 +211,51 @@ const handleAddRepo = async () => {
       return;
     }
 
-    showSuccess(
-      "Repository Added",
-      `${newRepoUrl.value} has been added successfully`,
-    );
+    const repoUrl = newRepoUrl.value;
     newRepoUrl.value = "";
 
-    // Fetch extensions dynamically without showing loading spinner
-    await fetchAllExtensions(false);
+    // Extract owner/repo to find the added repo and fetch its extensions
+    let repoId: string | undefined;
+    const cleanUrl = repoUrl.replace(/^https?:\/\//, "");
+    const match = cleanUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
+    if (match) {
+      repoId = `${match[1]}/${match[2]}`;
+    } else if (repoUrl.includes("/")) {
+      const parts = repoUrl.trim().split("/");
+      if (parts.length >= 2 && parts[0] && parts[1]) {
+        repoId = `${parts[0]}/${parts[1]}`;
+      }
+    }
 
-    // Invalidate cache to refresh available languages and labels after extensions are updated
-    invalidateCache();
+    showSuccess(
+      "Repository Added",
+      `${repoId || repoUrl} has been added successfully`,
+    );
+
+    if (repoId) {
+      const addedRepo = customRepos.value.find((r) => r.id === repoId);
+      if (addedRepo) {
+        await fetchExtensionsForRepo(addedRepo);
+      }
+    }
     checkingRepo.value = false;
   } catch (e) {
     showError("Error", "An error occurred while adding repository");
     console.error(e);
     checkingRepo.value = false;
   }
+};
+
+const addRepoFromId = async (repoId: string): Promise<boolean> => {
+  const trimmed = repoId.trim();
+  if (trimmed === "inkdex") return true;
+  if (trimmed.toLowerCase().includes("inkdex/extensions")) return true;
+
+  const existing = customRepos.value.find((r) => r.id === trimmed);
+  if (existing) return true;
+
+  const result = await addCustomRepo(trimmed);
+  return result.success;
 };
 
 const handleToggleSource = (source: string) => {
@@ -467,7 +495,6 @@ onMounted(async () => {
     urlParams.has("nb") ||
     urlParams.has("r") ||
     urlParams.has("nr") ||
-    urlParams.has("ar") ||
     urlParams.has("sel") ||
     urlParams.has("oss") ||
     urlParams.has("m") ||
@@ -478,105 +505,42 @@ onMounted(async () => {
   // Step 1: Load repos and process repositories from URL
   loadRepos();
 
-  // Helper function to add repository from URL
-  const addRepoFromUrl = async (repoUrl: string): Promise<boolean> => {
-    const trimmedUrl = repoUrl.trim();
-    // Skip inkdex as it's always available
-    if (trimmedUrl === "inkdex") return true;
-    if (trimmedUrl.toLowerCase().includes("inkdex/extensions")) return true;
-
-    const result = await addCustomRepo(trimmedUrl);
-    return result.success;
-  };
-
-  // Process ar parameter (additional repositories)
-  const arParam = urlParams.get("ar");
-  if (arParam) {
-    try {
-      const repoUrls = decodeURIComponent(arParam).split(",");
-      for (const repoUrl of repoUrls) {
-        const trimmedUrl = repoUrl.trim();
-        // Validate URL format before processing
-        if (
-          trimmedUrl &&
-          (trimmedUrl.startsWith("https://github.com/") ||
-            /^[^/]+\/[^/]+$/.test(trimmedUrl))
-        ) {
-          await addRepoFromUrl(trimmedUrl);
-        }
-      }
-    } catch (error) {
-      console.warn("Failed to parse ar parameter:", error);
+  // Add repos from r/nr params before fetching extensions
+  const repoIdsToAdd: string[] = [];
+  const rParam = urlParams.get("r");
+  if (rParam) {
+    repoIdsToAdd.push(
+      ...rParam
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0),
+    );
+  }
+  const nrParam = urlParams.get("nr");
+  if (nrParam) {
+    repoIdsToAdd.push(
+      ...nrParam
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0),
+    );
+  }
+  for (const repoId of repoIdsToAdd) {
+    if (
+      repoId !== "inkdex" &&
+      !repoId.toLowerCase().includes("inkdex/extensions")
+    ) {
+      await addRepoFromId(repoId);
     }
   }
-
-  // Step 2: Parse basic URL parameters that don't depend on extensions
-  // Note: Search query, selected extensions, and only show selected flag
-  // are now handled by useUrlSync.ts parseUrlParams() function
 
   // Step 2: Fetch extensions after repositories are set up
   await fetchAllExtensions();
 
-  // Wait for computed properties to update after extensions are loaded
-  // Use double nextTick to ensure computed properties fully update with new extension data
-  await nextTick();
-  await nextTick();
-
-  // Step 3: Use centralized URL parsing from useUrlSync (already instantiated above)
-
-  // Parse all URL parameters using centralized logic
+  // Step 3: Parse URL parameters using centralized logic
   parseUrlParams();
 
-  // Step 4: Auto-select repositories from ar parameter if no explicit r/nr filters
-  const additionalReposParam = urlParams.get("ar");
-  if (additionalReposParam && !urlParams.has("r") && !urlParams.has("nr")) {
-    const repoUrls = decodeURIComponent(additionalReposParam).split(",");
-    const autoSelectRepoIds: string[] = [];
-
-    for (const repoUrl of repoUrls) {
-      const trimmedUrl = repoUrl.trim();
-      // Skip inkdex as it's always available and shouldn't be auto-selected
-      if (trimmedUrl.toLowerCase().includes("inkdex/extensions")) continue;
-
-      // Extract repo ID from URL to match with customRepos
-      const match = trimmedUrl.match(/github\.com\/([^/]+)\/([^/?]+)/);
-      if (match) {
-        const [, owner, name] = match;
-        const repoId = `${owner}-${name}`;
-
-        // Check if this repo exists in our custom repos
-        if (customRepos.value.some((r) => r.id === repoId)) {
-          autoSelectRepoIds.push(repoId);
-        }
-      }
-    }
-
-    // Auto-select repositories from ar parameter
-    autoSelectRepoIds.forEach((repoId) => {
-      selectedSources.value.add(repoId);
-    });
-
-    // Update URL to include auto-selected repositories for consistency
-    if (autoSelectRepoIds.length > 0) {
-      urlParams.set("r", autoSelectRepoIds.join(","));
-    }
-  }
-
-  // Step 3: Fetch extensions after repositories are set up
-  await fetchAllExtensions();
-
-  // Wait for computed properties to update after extensions are loaded
-  await nextTick();
-
-  // Step 4: Parse remaining URL parameters that depend on extensions data
-  // Note: Content ratings, services, languages, and badges parsing
-  // are now handled by useUrlSync.ts parseUrlParams() function
-
-  // Step 5: Parse filter modes from URL (only when relevant filters are present)
-  // Note: Filter modes parsing and conflict resolution are now handled
-  // by useUrlSync.ts parseUrlParams() function
-
-  // Step 6: Set default SAFE rating if no filters were present
+  // Step 4: Set default SAFE rating if no filters were present
   if (!hasAnyUrlFilters) {
     selectedRatings.value = new Set([CONTENT_RATINGS[0]]); // SAFE is first rating
   }

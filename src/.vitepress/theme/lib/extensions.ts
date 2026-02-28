@@ -454,6 +454,56 @@ export const useExtensions = () => {
     }
   };
 
+  const fetchExtensionsForRepo = async (
+    repo: CustomRepository,
+  ): Promise<void> => {
+    try {
+      const data = await fetchVersioningJson(repo);
+      if (!data) return;
+
+      const inkdexMeta = await fetchInkdexMetadata();
+      inkdexMetadata.value = inkdexMeta;
+
+      const newExtensions: Extension[] = [];
+
+      for (const source of data.sources) {
+        const sourceRepo =
+          repo.id === "inkdex" && inkdexMeta
+            ? inkdexMeta[source.id]
+            : undefined;
+
+        newExtensions.push({
+          name: source.id,
+          source: repo.id,
+          url: `${buildBaseUrl(repo)}/${source.id}/index.js`,
+          html_url: `https://github.com/${repo.owner}/${repo.name}/tree/${repo.branch}/0.9/stable/${source.id}`,
+          metadata: source,
+          repoId: repo.id,
+          iconUrl: source.icon
+            ? buildIconUrl(repo, source.id, source.icon)
+            : "https://paperback.moe/pb-placeholder.png",
+          sourceRepo,
+        });
+      }
+
+      const existingBySource = new Map(
+        extensions.value
+          .filter((e) => e.source !== repo.id)
+          .map((e) => [e.name, e]),
+      );
+
+      for (const ext of newExtensions) {
+        existingBySource.set(ext.name, ext);
+      }
+
+      extensions.value = Array.from(existingBySource.values()).sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
+    } catch (e) {
+      console.error(`Failed to fetch extensions for ${repo.id}:`, e);
+    }
+  };
+
   const addCustomRepo = async (
     repoUrl: string,
   ): Promise<{ success: boolean; error?: string }> => {
@@ -499,7 +549,7 @@ export const useExtensions = () => {
       branch = hasGhPages ? "gh-pages" : await getDefaultBranch(owner, name);
     }
 
-    const id = `${owner}-${name}`;
+    const id = `${owner}/${name}`;
     const existing = customRepos.value.find((r) => r.id === id);
     if (existing) {
       // Duplicate found, return success (treat as successful no-op)
@@ -537,6 +587,7 @@ export const useExtensions = () => {
     loadRepos,
     getAllRepos,
     fetchAllExtensions,
+    fetchExtensionsForRepo,
     addCustomRepo,
     removeCustomRepo,
   };
