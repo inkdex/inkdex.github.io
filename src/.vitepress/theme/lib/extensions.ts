@@ -2,14 +2,11 @@
 /* Copyright © 2025 Inkdex */
 
 import { ref } from "vue";
-
-export interface GitHubFile {
-  name: string;
-  path: string;
-  type: "file" | "dir";
-  html_url: string;
-  download_url?: string;
-}
+import {
+  LANGUAGE_EMOJI_MAP,
+  LANGUAGE_NAMES_MAP,
+  VALID_IETF_LANGUAGE_TAGS,
+} from "./languageData";
 
 export interface ExtensionMetadata {
   id: string;
@@ -138,29 +135,8 @@ export const getLanguageName = (language: string | null): string => {
     return "Multi Language";
   }
 
-  const languageNames: Record<string, string> = {
-    en: "English",
-    es: "Spanish",
-    fr: "French",
-    de: "German",
-    it: "Italian",
-    pt: "Portuguese",
-    ru: "Russian",
-    ja: "Japanese",
-    zh: "Chinese",
-    ko: "Korean",
-    ar: "Arabic",
-    tr: "Turkish",
-    pl: "Polish",
-    nl: "Dutch",
-    id: "Indonesian",
-    th: "Thai",
-    vi: "Vietnamese",
-    hi: "Hindi",
-  };
-
   return (
-    languageNames[normalized] ||
+    LANGUAGE_NAMES_MAP[normalized] ||
     normalized.charAt(0).toUpperCase() + normalized.slice(1)
   );
 };
@@ -175,28 +151,7 @@ export const getLanguageEmoji = (language: string | null): string | null => {
     return "🌐";
   }
 
-  const emojiMap: Record<string, string> = {
-    en: "🇬🇧",
-    es: "🇪🇸",
-    fr: "🇫🇷",
-    de: "🇩🇪",
-    it: "🇮🇹",
-    pt: "🇵🇹",
-    ru: "🇷🇺",
-    ja: "🇯🇵",
-    zh: "🇨🇳",
-    ko: "🇰🇷",
-    ar: "🇸🇦",
-    tr: "🇹🇷",
-    pl: "🇵🇱",
-    nl: "🇳🇱",
-    id: "🇮🇩",
-    th: "🇹🇭",
-    vi: "🇻🇳",
-    hi: "🇮🇳",
-  };
-
-  return emojiMap[normalized] || null;
+  return LANGUAGE_EMOJI_MAP[normalized] || null;
 };
 
 export const buildIconUrl = (
@@ -215,88 +170,65 @@ export const buildBaseUrl = (repo: {
   return `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable`;
 };
 
-// Cache for API responses with repo count * minutes TTL
-const MINUTE_MS = 60 * 1000; // 1 minute in milliseconds
 const CACHE_STORAGE_KEY = "inkdex_api_cache";
 
-interface CacheEntry {
-  data: any;
-  fetchTime: number; // When the data was fetched
-}
-
-interface CacheStorage {
-  [key: string]: CacheEntry;
-}
-
-const loadCache = (): CacheStorage => {
-  if (typeof localStorage === "undefined") return {};
+const loadFromStorage = (key: string): any | null => {
+  if (typeof localStorage === "undefined") return null;
   try {
-    const stored = localStorage.getItem(CACHE_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {};
+    const stored = localStorage.getItem(`${CACHE_STORAGE_KEY}:${key}`);
+    return stored ? JSON.parse(stored) : null;
   } catch {
-    return {};
-  }
-};
-
-const saveCache = (cache: CacheStorage): void => {
-  if (typeof localStorage === "undefined") return;
-  try {
-    localStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(cache));
-  } catch (e) {
-    console.warn("Failed to save cache to localStorage:", e);
-  }
-};
-
-// Function to get cached data with information about expiration status
-const getCachedDataWithStatus = (
-  key: string,
-  allRepos: CustomRepository[] = [],
-): { data: any | null; isExpired: boolean } => {
-  const cache = loadCache();
-  const cached = cache[key];
-  if (!cached) return { data: null, isExpired: false };
-
-  // Calculate TTL based on current repo count
-  const ttlMs = calculateRepoBasedTtl(allRepos);
-  const isExpired = Date.now() - cached.fetchTime > ttlMs;
-
-  if (isExpired) {
-    return { data: cached.data, isExpired: true }; // Return expired data but indicate it's expired
-  }
-
-  return { data: cached.data, isExpired: false };
-};
-
-// Function to get only non-expired cached data
-const getCachedData = (
-  key: string,
-  allRepos: CustomRepository[] = [],
-): any | null => {
-  const result = getCachedDataWithStatus(key, allRepos);
-  if (result.isExpired) {
-    // Only remove expired cache when explicitly checked for non-expired data
-    const cache = loadCache();
-    delete cache[key];
-    saveCache(cache);
     return null;
   }
-  return result.data;
 };
 
-const setCachedData = (key: string, data: any): void => {
-  const cache = loadCache();
-  cache[key] = { data, fetchTime: Date.now() };
-  saveCache(cache);
+const saveToStorage = (key: string, data: any): void => {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.setItem(`${CACHE_STORAGE_KEY}:${key}`, JSON.stringify(data));
+  } catch (e) {
+    console.warn("Failed to save to localStorage:", e);
+  }
 };
 
-// Calculate TTL based on repo count in minutes to stay within 60 req/hour limit
-const calculateRepoBasedTtl = (allRepos: CustomRepository[]): number => {
-  // Use the number of repos as cache TTL in minutes to prevent over-fetching
-  // If there are n repos, cache for n minutes to avoid exceeding 60 req/hour limit
-  const repoCount = allRepos.length;
-  // At least 1 minute to prevent spamming GitHub
-  const minutes = Math.max(repoCount, 1);
-  return minutes * MINUTE_MS;
+// Enhanced error handling for API calls
+export const fetchVersioningJson = async (repo: {
+  owner: string;
+  name: string;
+  branch: string;
+}): Promise<{ sources: ExtensionMetadata[] } | null> => {
+  const cacheKey = `${repo.owner}/${repo.name}/${repo.branch}`;
+
+  // Fetch fresh data from GitHub
+  const url = `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable/versioning.json`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    saveToStorage(cacheKey, data);
+    return data;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error(
+      `Failed to fetch metadata from ${repo.owner}/${repo.name}:`,
+      errorMessage,
+    );
+
+    // If fetch fails, try to use existing localStorage entry
+    const fallback = loadFromStorage(cacheKey);
+    if (fallback) {
+      console.warn(`Using stored data for ${repo.owner}/${repo.name}`);
+      return fallback;
+    }
+
+    return null;
+  }
 };
 
 // Capability flags (SourceIntents)
@@ -304,7 +236,7 @@ const CAPABILITY_CHAPTER_PROVIDING = 1 << 0; // 1
 const CAPABILITY_MANGA_PROGRESS_PROVIDING = 1 << 1; // 2
 const CAPABILITY_CLOUDFLARE_BYPASS_PROVIDING = 1 << 4; // 16
 
-export const hasCapability = (
+const hasCapability = (
   capabilities: number | number[],
   flag: number,
 ): boolean => {
@@ -356,62 +288,6 @@ export const loadCustomRepos = (): CustomRepository[] => {
 export const saveCustomRepos = (repos: CustomRepository[]): void => {
   if (typeof localStorage === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(repos));
-};
-
-// Enhanced error handling for API calls
-export const fetchVersioningJson = async (
-  repo: {
-    owner: string;
-    name: string;
-    branch: string;
-  },
-  allRepos: CustomRepository[] = [],
-): Promise<{ sources: ExtensionMetadata[] } | null> => {
-  const cacheKey = `versioning:${repo.owner}/${repo.name}/${repo.branch}`;
-
-  // First, check if there's any cached data (expired or not) to use as backup
-  const expiredCacheResult = getCachedDataWithStatus(cacheKey, allRepos);
-  const hasExpiredCache =
-    expiredCacheResult.isExpired && expiredCacheResult.data !== null;
-  const expiredCacheData = hasExpiredCache ? expiredCacheResult.data : null;
-
-  // Get non-expired cached data (this removes expired cache)
-  const cached = getCachedData(cacheKey, allRepos);
-
-  // If cache exists (and is not expired), return it
-  if (cached) {
-    return cached;
-  }
-
-  // Cache is expired or doesn't exist, fetch from GitHub
-  const url = `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable/versioning.json`;
-
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    setCachedData(cacheKey, data);
-    return data;
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    console.error(
-      `Failed to fetch metadata from ${repo.owner}/${repo.name}:`,
-      errorMessage,
-    );
-
-    // If fetch fails and we have expired cache, return it
-    if (expiredCacheData) {
-      console.warn(`Using expired cache for ${repo.owner}/${repo.name}`);
-      return expiredCacheData;
-    }
-
-    return null;
-  }
 };
 
 export const checkBranchExists = async (
@@ -475,7 +351,7 @@ export const useExtensions = () => {
       const allRepos = getAllRepos();
 
       const metadataPromises = allRepos.map(async (repo) => {
-        const data = await fetchVersioningJson(repo, allRepos);
+        const data = await fetchVersioningJson(repo);
         return data ? { repo, data } : null;
       });
 
