@@ -2,11 +2,7 @@
 /* Copyright © 2025 Inkdex */
 
 import { ref } from "vue";
-import {
-  LANGUAGE_EMOJI_MAP,
-  LANGUAGE_NAMES_MAP,
-  VALID_IETF_LANGUAGE_TAGS,
-} from "./languageData";
+import { LANGUAGE_EMOJI_MAP, LANGUAGE_NAMES_MAP } from "./languageData";
 
 export interface ExtensionMetadata {
   id: string;
@@ -37,6 +33,7 @@ export interface Extension {
   metadata?: ExtensionMetadata;
   iconUrl?: string;
   repoId?: string;
+  sourceRepo?: string;
 }
 
 export interface CustomRepository {
@@ -47,7 +44,7 @@ export interface CustomRepository {
   displayName: string;
 }
 
-const STORAGE_KEY = "inkdex-custom-repos";
+const STORAGE_KEY = "inkdex-custom-repositories";
 const DEFAULT_REPOS: Omit<CustomRepository, "displayName">[] = [
   { id: "inkdex", name: "extensions", owner: "inkdex", branch: "master" },
 ];
@@ -170,7 +167,7 @@ export const buildBaseUrl = (repo: {
   return `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable`;
 };
 
-const CACHE_STORAGE_KEY = "inkdex_api_cache";
+const CACHE_STORAGE_KEY = "inkdex-github-cache";
 
 const loadFromStorage = (key: string): any | null => {
   if (typeof localStorage === "undefined") return null;
@@ -189,6 +186,62 @@ const saveToStorage = (key: string, data: any): void => {
   } catch (e) {
     console.warn("Failed to save to localStorage:", e);
   }
+};
+
+const INKDEX_METADATA_KEY = "inkdex/extensions-metadata";
+
+const INKDEX_CATEGORY_TO_REPO: Record<string, string> = {
+  "general-extensions": "inkdex/general-extensions",
+  "madara-extensions": "inkdex/madara-extensions",
+  "mangabox-extensions": "inkdex/mangabox-extensions",
+  "mangastream-extensions": "inkdex/mangastream-extensions",
+  "mangaworld-extensions": "inkdex/mangaworld-extensions",
+  "liliana-extensions": "inkdex/liliana-extensions",
+  "animace-extensions": "inkdex/animace-extensions",
+  "tracker-extensions": "inkdex/tracker-extensions",
+};
+
+export const fetchInkdexMetadata = async (): Promise<Record<
+  string,
+  string
+> | null> => {
+  const cached = loadFromStorage(INKDEX_METADATA_KEY);
+  if (cached) return cached;
+
+  const url =
+    "https://raw.githubusercontent.com/inkdex/extensions/refs/heads/master/0.9/stable/metadata.json";
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    const data = await response.json();
+
+    const extensionToRepo: Record<string, string> = {};
+
+    for (const [category, extensions] of Object.entries(data)) {
+      const repo = INKDEX_CATEGORY_TO_REPO[category];
+      if (!repo) continue;
+
+      for (const extName of Object.keys(extensions as object)) {
+        extensionToRepo[extName] = repo;
+      }
+    }
+
+    saveToStorage(INKDEX_METADATA_KEY, extensionToRepo);
+    return extensionToRepo;
+  } catch (error) {
+    console.error("Failed to fetch Inkdex metadata:", error);
+    return cached;
+  }
+};
+
+export const getInkdexSourceRepo = (
+  extensionName: string,
+  inkdexMetadata: Record<string, string> | null,
+): string | null => {
+  return inkdexMetadata?.[extensionName] || null;
 };
 
 // Enhanced error handling for API calls
@@ -328,6 +381,7 @@ export const useExtensions = () => {
   const loading = ref(true);
   const error = ref<string | null>(null);
   const customRepos = ref<CustomRepository[]>([]);
+  const inkdexMetadata = ref<Record<string, string> | null>(null);
 
   const loadRepos = () => {
     customRepos.value = loadCustomRepos();
@@ -348,16 +402,17 @@ export const useExtensions = () => {
     error.value = null;
 
     try {
-      const allRepos = getAllRepos();
+      const [inkdexMeta, ...metadataResultsRaw] = await Promise.all([
+        fetchInkdexMetadata(),
+        ...getAllRepos().map(async (repo) => {
+          const data = await fetchVersioningJson(repo);
+          return data ? { repo, data } : null;
+        }),
+      ]);
 
-      const metadataPromises = allRepos.map(async (repo) => {
-        const data = await fetchVersioningJson(repo);
-        return data ? { repo, data } : null;
-      });
+      inkdexMetadata.value = inkdexMeta;
 
-      const metadataResults = (await Promise.all(metadataPromises)).filter(
-        (r) => r !== null,
-      );
+      const metadataResults = metadataResultsRaw.filter((r) => r !== null);
 
       const allExtensions: Extension[] = [];
 
@@ -367,6 +422,11 @@ export const useExtensions = () => {
 
         // Always use versioning.json data directly - no need to fetch contents separately
         for (const source of data.sources) {
+          const sourceRepo =
+            repo.id === "inkdex" && inkdexMeta
+              ? inkdexMeta[source.id]
+              : undefined;
+
           allExtensions.push({
             name: source.id,
             source: repo.id,
@@ -377,6 +437,7 @@ export const useExtensions = () => {
             iconUrl: source.icon
               ? buildIconUrl(repo, source.id, source.icon)
               : "https://paperback.moe/pb-placeholder.png",
+            sourceRepo,
           });
         }
       }
@@ -472,6 +533,7 @@ export const useExtensions = () => {
     loading,
     error,
     customRepos,
+    inkdexMetadata,
     loadRepos,
     getAllRepos,
     fetchAllExtensions,

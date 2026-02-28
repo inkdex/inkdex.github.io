@@ -1113,6 +1113,7 @@ onMounted(async () => {
       <ExtensionDetails
         :extension="selectedExtension"
         :show="showDetails"
+        :custom-repos="customRepos"
         @hide="hideExtensionDetails"
         @install="installExtension"
       />
