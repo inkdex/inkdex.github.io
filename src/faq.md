@@ -5,6 +5,17 @@
 
 ## General
 
+### How do I install Paperback version 0.9?
+
+<details>
+  <summary>Answer</summary>
+
+Paperback version 0.9 is still in development. It's accessible through TestFlight
+for Papaerback Patreon supporters and Discord boosters. More info can be found on
+the [official Paperback website](https://paperback.moe).
+
+</details>
+
 ### How do I find what version of Paperback I am using?
 
 <details>
