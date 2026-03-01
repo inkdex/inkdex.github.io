@@ -1037,7 +1037,7 @@
   font-size: 0.85rem;
   color: var(--vp-c-text-1);
   text-decoration: none;
-  padding: 0.4rem 0.75rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 8px;
   background: var(--vp-c-bg);
   transition: all 0.2s ease;
@@ -1053,6 +1053,37 @@
   border-color: var(--vp-c-border);
 }
 .dev-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+.source-link {
+  font-size: 0.85rem;
+  color: var(--vp-c-text-1);
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  background: var(--vp-c-bg);
+  transition: all 0.2s ease;
+  border: 1px solid var(--vp-c-divider);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  line-height: 1.5rem;
+}
+
+.repo-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.source-link:hover {
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+  border-color: var(--vp-c-border);
+}
+.source-link svg {
   width: 14px;
   height: 14px;
 }

@@ -3,6 +3,10 @@
 
 import { computed, ref, type Ref } from "vue";
 import { normalizeLanguageTag, type Extension } from "../lib/extensions";
+import {
+  LANGUAGE_EMOJI_MAP,
+  VALID_IETF_LANGUAGE_TAGS,
+} from "../lib/languageData";
 
 export const useAvailableData = (extensions: Ref<Extension[]>) => {
   // Cache for computed values to avoid recalculation
@@ -36,67 +40,12 @@ export const useAvailableData = (extensions: Ref<Extension[]>) => {
       if (ext.metadata?.language) {
         const normalizedLanguage = normalizeLanguageTag(ext.metadata.language);
 
-        // Use the complete set of valid IETF language tags from the emoji map
-        const languageEmojiMap = {
-          en: "🇬🇧",
-          zh: "🇨🇳",
-          hi: "🇮🇳",
-          es: "🇪🇸",
-          fr: "🇫🇷",
-          ar: "🇸🇦",
-          bn: "🇧🇩",
-          ru: "🇷🇺",
-          pt: "🇵🇹",
-          ur: "🇵🇰",
-          id: "🇮🇩",
-          de: "🇩🇪",
-          ja: "🇯🇵",
-          sw: "🇰🇪",
-          mr: "🇮🇳",
-          te: "🇮🇳",
-          tr: "🇹🇷",
-          ta: "🇮🇳",
-          ko: "🇰🇷",
-          vi: "🇻🇳",
-          it: "🇮🇹",
-          th: "🇹🇭",
-          gu: "🇮🇳",
-          fa: "🇮🇷",
-          pl: "🇵🇱",
-          uk: "🇺🇦",
-          ml: "🇮🇳",
-          kn: "🇮🇳",
-          or: "🇮🇳",
-          my: "🇲🇲",
-          pa: "🇮🇳",
-          nl: "🇳🇱",
-          ro: "🇷🇴",
-          hu: "🇭🇺",
-          el: "🇬🇷",
-          cs: "🇨🇿",
-          sv: "🇸🇪",
-          fi: "🇫🇮",
-          da: "🇩🇰",
-          no: "🇳🇴",
-          he: "🇮🇱",
-          sk: "🇸🇰",
-          bg: "🇧🇬",
-          hr: "🇭🇷",
-          sr: "🇷🇸",
-          lt: "🇱🇹",
-          sl: "🇸🇮",
-          et: "🇪🇪",
-          lv: "🇱🇻",
-        };
+        const validTags = new Set(Object.keys(LANGUAGE_EMOJI_MAP));
+        validTags.add("multi");
 
-        const validTags = new Set(Object.keys(languageEmojiMap));
-        validTags.add("multi"); // Add multi as a special case
-
-        // Add valid IETF tags, but allow non-matches to show as-is
         if (validTags.has(normalizedLanguage)) {
           languages.add(normalizedLanguage);
         } else {
-          // For non-matching tags, add the original language string as-is
           if (ext.metadata.language && ext.metadata.language.trim()) {
             languages.add(ext.metadata.language);
           }
@@ -108,75 +57,18 @@ export const useAvailableData = (extensions: Ref<Extension[]>) => {
       const aLower = a.toLowerCase();
       const bLower = b.toLowerCase();
 
-      // Multi always first
       if (aLower === "multi") return -1;
       if (bLower === "multi") return 1;
 
-      // Define valid IETF language tags
-      const validIETFTags = new Set([
-        "en",
-        "es",
-        "fr",
-        "de",
-        "it",
-        "pt",
-        "ru",
-        "ja",
-        "zh",
-        "ko",
-        "ar",
-        "tr",
-        "pl",
-        "nl",
-        "id",
-        "th",
-        "vi",
-        "hi",
-        "bn",
-        "ur",
-        "sw",
-        "mr",
-        "te",
-        "ta",
-        "gu",
-        "fa",
-        "uk",
-        "ml",
-        "kn",
-        "or",
-        "my",
-        "pa",
-        "ro",
-        "hu",
-        "el",
-        "cs",
-        "sv",
-        "fi",
-        "da",
-        "no",
-        "he",
-        "sk",
-        "bg",
-        "hr",
-        "sr",
-        "lt",
-        "sl",
-        "et",
-        "lv",
-      ]);
-
-      // Check if A is valid IETF and B is not
-      const aIsIETF = validIETFTags.has(aLower);
-      const bIsIETF = validIETFTags.has(bLower);
+      const aIsIETF = VALID_IETF_LANGUAGE_TAGS.has(aLower);
+      const bIsIETF = VALID_IETF_LANGUAGE_TAGS.has(bLower);
 
       if (aIsIETF && !bIsIETF) return -1;
       if (!aIsIETF && bIsIETF) return 1;
 
-      // If both are IETF or both are non-IETF, sort alphabetically
       return a.localeCompare(b);
     });
 
-    // Cache the result
     cachedLanguages.value = sortedLanguages;
     lastLanguagesHash.value = currentHash;
 

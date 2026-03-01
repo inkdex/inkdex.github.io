@@ -2,14 +2,7 @@
 /* Copyright © 2025 Inkdex */
 
 import { ref } from "vue";
-
-export interface GitHubFile {
-  name: string;
-  path: string;
-  type: "file" | "dir";
-  html_url: string;
-  download_url?: string;
-}
+import { LANGUAGE_EMOJI_MAP, LANGUAGE_NAMES_MAP } from "./languageData";
 
 export interface ExtensionMetadata {
   id: string;
@@ -40,6 +33,7 @@ export interface Extension {
   metadata?: ExtensionMetadata;
   iconUrl?: string;
   repoId?: string;
+  sourceRepo?: string;
 }
 
 export interface CustomRepository {
@@ -50,7 +44,7 @@ export interface CustomRepository {
   displayName: string;
 }
 
-const STORAGE_KEY = "inkdex-custom-repos";
+const STORAGE_KEY = "inkdex-custom-repositories";
 const DEFAULT_REPOS: Omit<CustomRepository, "displayName">[] = [
   { id: "inkdex", name: "extensions", owner: "inkdex", branch: "master" },
 ];
@@ -138,29 +132,8 @@ export const getLanguageName = (language: string | null): string => {
     return "Multi Language";
   }
 
-  const languageNames: Record<string, string> = {
-    en: "English",
-    es: "Spanish",
-    fr: "French",
-    de: "German",
-    it: "Italian",
-    pt: "Portuguese",
-    ru: "Russian",
-    ja: "Japanese",
-    zh: "Chinese",
-    ko: "Korean",
-    ar: "Arabic",
-    tr: "Turkish",
-    pl: "Polish",
-    nl: "Dutch",
-    id: "Indonesian",
-    th: "Thai",
-    vi: "Vietnamese",
-    hi: "Hindi",
-  };
-
   return (
-    languageNames[normalized] ||
+    LANGUAGE_NAMES_MAP[normalized] ||
     normalized.charAt(0).toUpperCase() + normalized.slice(1)
   );
 };
@@ -175,28 +148,7 @@ export const getLanguageEmoji = (language: string | null): string | null => {
     return "🌐";
   }
 
-  const emojiMap: Record<string, string> = {
-    en: "🇬🇧",
-    es: "🇪🇸",
-    fr: "🇫🇷",
-    de: "🇩🇪",
-    it: "🇮🇹",
-    pt: "🇵🇹",
-    ru: "🇷🇺",
-    ja: "🇯🇵",
-    zh: "🇨🇳",
-    ko: "🇰🇷",
-    ar: "🇸🇦",
-    tr: "🇹🇷",
-    pl: "🇵🇱",
-    nl: "🇳🇱",
-    id: "🇮🇩",
-    th: "🇹🇭",
-    vi: "🇻🇳",
-    hi: "🇮🇳",
-  };
-
-  return emojiMap[normalized] || null;
+  return LANGUAGE_EMOJI_MAP[normalized] || null;
 };
 
 export const buildIconUrl = (
@@ -215,88 +167,121 @@ export const buildBaseUrl = (repo: {
   return `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable`;
 };
 
-// Cache for API responses with repo count * minutes TTL
-const MINUTE_MS = 60 * 1000; // 1 minute in milliseconds
-const CACHE_STORAGE_KEY = "inkdex_api_cache";
+const CACHE_STORAGE_KEY = "inkdex-github-cache";
 
-interface CacheEntry {
-  data: any;
-  fetchTime: number; // When the data was fetched
-}
-
-interface CacheStorage {
-  [key: string]: CacheEntry;
-}
-
-const loadCache = (): CacheStorage => {
-  if (typeof localStorage === "undefined") return {};
+const loadFromStorage = (key: string): any | null => {
+  if (typeof localStorage === "undefined") return null;
   try {
-    const stored = localStorage.getItem(CACHE_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {};
+    const stored = localStorage.getItem(`${CACHE_STORAGE_KEY}:${key}`);
+    return stored ? JSON.parse(stored) : null;
   } catch {
-    return {};
-  }
-};
-
-const saveCache = (cache: CacheStorage): void => {
-  if (typeof localStorage === "undefined") return;
-  try {
-    localStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(cache));
-  } catch (e) {
-    console.warn("Failed to save cache to localStorage:", e);
-  }
-};
-
-// Function to get cached data with information about expiration status
-const getCachedDataWithStatus = (
-  key: string,
-  allRepos: CustomRepository[] = [],
-): { data: any | null; isExpired: boolean } => {
-  const cache = loadCache();
-  const cached = cache[key];
-  if (!cached) return { data: null, isExpired: false };
-
-  // Calculate TTL based on current repo count
-  const ttlMs = calculateRepoBasedTtl(allRepos);
-  const isExpired = Date.now() - cached.fetchTime > ttlMs;
-
-  if (isExpired) {
-    return { data: cached.data, isExpired: true }; // Return expired data but indicate it's expired
-  }
-
-  return { data: cached.data, isExpired: false };
-};
-
-// Function to get only non-expired cached data
-const getCachedData = (
-  key: string,
-  allRepos: CustomRepository[] = [],
-): any | null => {
-  const result = getCachedDataWithStatus(key, allRepos);
-  if (result.isExpired) {
-    // Only remove expired cache when explicitly checked for non-expired data
-    const cache = loadCache();
-    delete cache[key];
-    saveCache(cache);
     return null;
   }
-  return result.data;
 };
 
-const setCachedData = (key: string, data: any): void => {
-  const cache = loadCache();
-  cache[key] = { data, fetchTime: Date.now() };
-  saveCache(cache);
+const saveToStorage = (key: string, data: any): void => {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.setItem(`${CACHE_STORAGE_KEY}:${key}`, JSON.stringify(data));
+  } catch (e) {
+    console.warn("Failed to save to localStorage:", e);
+  }
 };
 
-// Calculate TTL based on repo count in minutes to stay within 60 req/hour limit
-const calculateRepoBasedTtl = (allRepos: CustomRepository[]): number => {
-  // Use the number of repos as cache TTL in minutes to prevent over-fetching
-  // If there are n repos, cache for n minutes to avoid exceeding 60 req/hour limit
-  const repoCount = allRepos.length;
-  // At least 1 minute to prevent spamming GitHub
-  const minutes = Math.max(repoCount, 1);
-  return minutes * MINUTE_MS;
+const INKDEX_METADATA_KEY = "inkdex/extensions-metadata";
+
+const INKDEX_CATEGORY_TO_REPO: Record<string, string> = {
+  "general-extensions": "inkdex/general-extensions",
+  "madara-extensions": "inkdex/madara-extensions",
+  "mangabox-extensions": "inkdex/mangabox-extensions",
+  "mangastream-extensions": "inkdex/mangastream-extensions",
+  "mangaworld-extensions": "inkdex/mangaworld-extensions",
+  "liliana-extensions": "inkdex/liliana-extensions",
+  "animace-extensions": "inkdex/animace-extensions",
+  "tracker-extensions": "inkdex/tracker-extensions",
+};
+
+export const fetchInkdexMetadata = async (): Promise<Record<
+  string,
+  string
+> | null> => {
+  const cached = loadFromStorage(INKDEX_METADATA_KEY);
+  if (cached) return cached;
+
+  const url =
+    "https://raw.githubusercontent.com/inkdex/extensions/refs/heads/master/0.9/stable/metadata.json";
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    const data = await response.json();
+
+    const extensionToRepo: Record<string, string> = {};
+
+    for (const [category, extensions] of Object.entries(data)) {
+      const repo = INKDEX_CATEGORY_TO_REPO[category];
+      if (!repo) continue;
+
+      for (const extName of Object.keys(extensions as object)) {
+        extensionToRepo[extName] = repo;
+      }
+    }
+
+    saveToStorage(INKDEX_METADATA_KEY, extensionToRepo);
+    return extensionToRepo;
+  } catch (error) {
+    console.error("Failed to fetch Inkdex metadata:", error);
+    return cached;
+  }
+};
+
+export const getInkdexSourceRepo = (
+  extensionName: string,
+  inkdexMetadata: Record<string, string> | null,
+): string | null => {
+  return inkdexMetadata?.[extensionName] || null;
+};
+
+// Enhanced error handling for API calls
+export const fetchVersioningJson = async (repo: {
+  owner: string;
+  name: string;
+  branch: string;
+}): Promise<{ sources: ExtensionMetadata[] } | null> => {
+  const cacheKey = `${repo.owner}/${repo.name}/${repo.branch}`;
+
+  // Fetch fresh data from GitHub
+  const url = `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable/versioning.json`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    saveToStorage(cacheKey, data);
+    return data;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error(
+      `Failed to fetch metadata from ${repo.owner}/${repo.name}:`,
+      errorMessage,
+    );
+
+    // If fetch fails, try to use existing localStorage entry
+    const fallback = loadFromStorage(cacheKey);
+    if (fallback) {
+      console.warn(`Using stored data for ${repo.owner}/${repo.name}`);
+      return fallback;
+    }
+
+    return null;
+  }
 };
 
 // Capability flags (SourceIntents)
@@ -304,7 +289,7 @@ const CAPABILITY_CHAPTER_PROVIDING = 1 << 0; // 1
 const CAPABILITY_MANGA_PROGRESS_PROVIDING = 1 << 1; // 2
 const CAPABILITY_CLOUDFLARE_BYPASS_PROVIDING = 1 << 4; // 16
 
-export const hasCapability = (
+const hasCapability = (
   capabilities: number | number[],
   flag: number,
 ): boolean => {
@@ -358,62 +343,6 @@ export const saveCustomRepos = (repos: CustomRepository[]): void => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(repos));
 };
 
-// Enhanced error handling for API calls
-export const fetchVersioningJson = async (
-  repo: {
-    owner: string;
-    name: string;
-    branch: string;
-  },
-  allRepos: CustomRepository[] = [],
-): Promise<{ sources: ExtensionMetadata[] } | null> => {
-  const cacheKey = `versioning:${repo.owner}/${repo.name}/${repo.branch}`;
-
-  // First, check if there's any cached data (expired or not) to use as backup
-  const expiredCacheResult = getCachedDataWithStatus(cacheKey, allRepos);
-  const hasExpiredCache =
-    expiredCacheResult.isExpired && expiredCacheResult.data !== null;
-  const expiredCacheData = hasExpiredCache ? expiredCacheResult.data : null;
-
-  // Get non-expired cached data (this removes expired cache)
-  const cached = getCachedData(cacheKey, allRepos);
-
-  // If cache exists (and is not expired), return it
-  if (cached) {
-    return cached;
-  }
-
-  // Cache is expired or doesn't exist, fetch from GitHub
-  const url = `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable/versioning.json`;
-
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    setCachedData(cacheKey, data);
-    return data;
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    console.error(
-      `Failed to fetch metadata from ${repo.owner}/${repo.name}:`,
-      errorMessage,
-    );
-
-    // If fetch fails and we have expired cache, return it
-    if (expiredCacheData) {
-      console.warn(`Using expired cache for ${repo.owner}/${repo.name}`);
-      return expiredCacheData;
-    }
-
-    return null;
-  }
-};
-
 export const checkBranchExists = async (
   owner: string,
   name: string,
@@ -452,6 +381,7 @@ export const useExtensions = () => {
   const loading = ref(true);
   const error = ref<string | null>(null);
   const customRepos = ref<CustomRepository[]>([]);
+  const inkdexMetadata = ref<Record<string, string> | null>(null);
 
   const loadRepos = () => {
     customRepos.value = loadCustomRepos();
@@ -472,16 +402,17 @@ export const useExtensions = () => {
     error.value = null;
 
     try {
-      const allRepos = getAllRepos();
+      const [inkdexMeta, ...metadataResultsRaw] = await Promise.all([
+        fetchInkdexMetadata(),
+        ...getAllRepos().map(async (repo) => {
+          const data = await fetchVersioningJson(repo);
+          return data ? { repo, data } : null;
+        }),
+      ]);
 
-      const metadataPromises = allRepos.map(async (repo) => {
-        const data = await fetchVersioningJson(repo, allRepos);
-        return data ? { repo, data } : null;
-      });
+      inkdexMetadata.value = inkdexMeta;
 
-      const metadataResults = (await Promise.all(metadataPromises)).filter(
-        (r) => r !== null,
-      );
+      const metadataResults = metadataResultsRaw.filter((r) => r !== null);
 
       const allExtensions: Extension[] = [];
 
@@ -491,6 +422,11 @@ export const useExtensions = () => {
 
         // Always use versioning.json data directly - no need to fetch contents separately
         for (const source of data.sources) {
+          const sourceRepo =
+            repo.id === "inkdex" && inkdexMeta
+              ? inkdexMeta[source.id]
+              : undefined;
+
           allExtensions.push({
             name: source.id,
             source: repo.id,
@@ -501,6 +437,7 @@ export const useExtensions = () => {
             iconUrl: source.icon
               ? buildIconUrl(repo, source.id, source.icon)
               : "https://paperback.moe/pb-placeholder.png",
+            sourceRepo,
           });
         }
       }
@@ -514,6 +451,56 @@ export const useExtensions = () => {
       if (showLoading) {
         loading.value = false;
       }
+    }
+  };
+
+  const fetchExtensionsForRepo = async (
+    repo: CustomRepository,
+  ): Promise<void> => {
+    try {
+      const data = await fetchVersioningJson(repo);
+      if (!data) return;
+
+      const inkdexMeta = await fetchInkdexMetadata();
+      inkdexMetadata.value = inkdexMeta;
+
+      const newExtensions: Extension[] = [];
+
+      for (const source of data.sources) {
+        const sourceRepo =
+          repo.id === "inkdex" && inkdexMeta
+            ? inkdexMeta[source.id]
+            : undefined;
+
+        newExtensions.push({
+          name: source.id,
+          source: repo.id,
+          url: `${buildBaseUrl(repo)}/${source.id}/index.js`,
+          html_url: `https://github.com/${repo.owner}/${repo.name}/tree/${repo.branch}/0.9/stable/${source.id}`,
+          metadata: source,
+          repoId: repo.id,
+          iconUrl: source.icon
+            ? buildIconUrl(repo, source.id, source.icon)
+            : "https://paperback.moe/pb-placeholder.png",
+          sourceRepo,
+        });
+      }
+
+      const existingBySource = new Map(
+        extensions.value
+          .filter((e) => e.source !== repo.id)
+          .map((e) => [e.name, e]),
+      );
+
+      for (const ext of newExtensions) {
+        existingBySource.set(ext.name, ext);
+      }
+
+      extensions.value = Array.from(existingBySource.values()).sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
+    } catch (e) {
+      console.error(`Failed to fetch extensions for ${repo.id}:`, e);
     }
   };
 
@@ -562,7 +549,7 @@ export const useExtensions = () => {
       branch = hasGhPages ? "gh-pages" : await getDefaultBranch(owner, name);
     }
 
-    const id = `${owner}-${name}`;
+    const id = `${owner}/${name}`;
     const existing = customRepos.value.find((r) => r.id === id);
     if (existing) {
       // Duplicate found, return success (treat as successful no-op)
@@ -596,9 +583,11 @@ export const useExtensions = () => {
     loading,
     error,
     customRepos,
+    inkdexMetadata,
     loadRepos,
     getAllRepos,
     fetchAllExtensions,
+    fetchExtensionsForRepo,
     addCustomRepo,
     removeCustomRepo,
   };
