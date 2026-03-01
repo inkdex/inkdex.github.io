@@ -44,7 +44,7 @@ export default defineConfig({
     },
 
     footer: {
-      copyright: "Copyright © 2025 Inkdex. GPLv3 or Later Licensed.",
+      copyright: "Copyright © 2026 Inkdex. GPLv3 or Later Licensed.",
     },
   },
 
