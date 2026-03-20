@@ -167,29 +167,6 @@ export const buildBaseUrl = (repo: {
   return `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable`;
 };
 
-const CACHE_STORAGE_KEY = "inkdex-github-cache";
-
-const loadFromStorage = (key: string): any | null => {
-  if (typeof localStorage === "undefined") return null;
-  try {
-    const stored = localStorage.getItem(`${CACHE_STORAGE_KEY}:${key}`);
-    return stored ? JSON.parse(stored) : null;
-  } catch {
-    return null;
-  }
-};
-
-const saveToStorage = (key: string, data: any): void => {
-  if (typeof localStorage === "undefined") return;
-  try {
-    localStorage.setItem(`${CACHE_STORAGE_KEY}:${key}`, JSON.stringify(data));
-  } catch (e) {
-    console.warn("Failed to save to localStorage:", e);
-  }
-};
-
-const INKDEX_METADATA_KEY = "inkdex/extensions-metadata";
-
 const INKDEX_CATEGORY_TO_REPO: Record<string, string> = {
   "general-extensions": "inkdex/general-extensions",
   "madara-extensions": "inkdex/madara-extensions",
@@ -205,9 +182,6 @@ export const fetchInkdexMetadata = async (): Promise<Record<
   string,
   string
 > | null> => {
-  const cached = loadFromStorage(INKDEX_METADATA_KEY);
-  if (cached) return cached;
-
   const url =
     "https://raw.githubusercontent.com/inkdex/extensions/refs/heads/master/0.9/stable/metadata.json";
 
@@ -229,11 +203,10 @@ export const fetchInkdexMetadata = async (): Promise<Record<
       }
     }
 
-    saveToStorage(INKDEX_METADATA_KEY, extensionToRepo);
     return extensionToRepo;
   } catch (error) {
     console.error("Failed to fetch Inkdex metadata:", error);
-    return cached;
+    return null;
   }
 };
 
@@ -244,15 +217,11 @@ export const getInkdexSourceRepo = (
   return inkdexMetadata?.[extensionName] || null;
 };
 
-// Enhanced error handling for API calls
 export const fetchVersioningJson = async (repo: {
   owner: string;
   name: string;
   branch: string;
 }): Promise<{ sources: ExtensionMetadata[] } | null> => {
-  const cacheKey = `${repo.owner}/${repo.name}/${repo.branch}`;
-
-  // Fetch fresh data from GitHub
   const url = `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable/versioning.json`;
 
   try {
@@ -262,9 +231,7 @@ export const fetchVersioningJson = async (repo: {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data = await response.json();
-    saveToStorage(cacheKey, data);
-    return data;
+    return await response.json();
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
@@ -272,13 +239,6 @@ export const fetchVersioningJson = async (repo: {
       `Failed to fetch metadata from ${repo.owner}/${repo.name}:`,
       errorMessage,
     );
-
-    // If fetch fails, try to use existing localStorage entry
-    const fallback = loadFromStorage(cacheKey);
-    if (fallback) {
-      console.warn(`Using stored data for ${repo.owner}/${repo.name}`);
-      return fallback;
-    }
 
     return null;
   }
