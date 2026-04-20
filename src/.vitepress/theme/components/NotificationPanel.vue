@@ -3,6 +3,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+
 import type { Notification } from "../composables/useNotifications";
 
 interface Props {
@@ -55,10 +56,7 @@ const removeNotification = (id: string) => {
                 {{ getNotificationIcon(notification.type) }}
               </span>
               <span class="notification-title">{{ notification.title }}</span>
-              <button
-                class="notification-close"
-                @click="removeNotification(notification.id)"
-              >
+              <button class="notification-close" @click="removeNotification(notification.id)">
                 ✕
               </button>
             </div>

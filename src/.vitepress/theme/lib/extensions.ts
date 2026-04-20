@@ -132,10 +132,7 @@ export const getLanguageName = (language: string | null): string => {
     return "Multi Language";
   }
 
-  return (
-    LANGUAGE_NAMES_MAP[normalized] ||
-    normalized.charAt(0).toUpperCase() + normalized.slice(1)
-  );
+  return LANGUAGE_NAMES_MAP[normalized] || normalized.charAt(0).toUpperCase() + normalized.slice(1);
 };
 
 // Get flag emoji for language code
@@ -159,11 +156,7 @@ export const buildIconUrl = (
   return `https://${repo.owner}.github.io/${repo.name}/0.9/stable/${extensionId}/static/${iconPath}`;
 };
 
-export const buildBaseUrl = (repo: {
-  owner: string;
-  name: string;
-  branch: string;
-}): string => {
+export const buildBaseUrl = (repo: { owner: string; name: string; branch: string }): string => {
   return `https://raw.githubusercontent.com/${repo.owner}/${repo.name}/${repo.branch}/0.9/stable`;
 };
 
@@ -178,10 +171,7 @@ const INKDEX_CATEGORY_TO_REPO: Record<string, string> = {
   "tracker-extensions": "inkdex/tracker-extensions",
 };
 
-export const fetchInkdexMetadata = async (): Promise<Record<
-  string,
-  string
-> | null> => {
+export const fetchInkdexMetadata = async (): Promise<Record<string, string> | null> => {
   const url =
     "https://raw.githubusercontent.com/inkdex/extensions/refs/heads/master/0.9/stable/metadata.json";
 
@@ -233,12 +223,8 @@ export const fetchVersioningJson = async (repo: {
 
     return await response.json();
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    console.error(
-      `Failed to fetch metadata from ${repo.owner}/${repo.name}:`,
-      errorMessage,
-    );
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error(`Failed to fetch metadata from ${repo.owner}/${repo.name}:`, errorMessage);
 
     return null;
   }
@@ -249,10 +235,7 @@ const CAPABILITY_CHAPTER_PROVIDING = 1 << 0; // 1
 const CAPABILITY_MANGA_PROGRESS_PROVIDING = 1 << 1; // 2
 const CAPABILITY_CLOUDFLARE_BYPASS_PROVIDING = 1 << 4; // 16
 
-const hasCapability = (
-  capabilities: number | number[],
-  flag: number,
-): boolean => {
+const hasCapability = (capabilities: number | number[], flag: number): boolean => {
   if (Array.isArray(capabilities)) {
     return capabilities.indexOf(flag) !== -1;
   }
@@ -262,13 +245,10 @@ const hasCapability = (
 export const hasChapterProviding = (capabilities: number | number[]): boolean =>
   hasCapability(capabilities, CAPABILITY_CHAPTER_PROVIDING);
 
-export const hasMangaProgressProviding = (
-  capabilities: number | number[],
-): boolean => hasCapability(capabilities, CAPABILITY_MANGA_PROGRESS_PROVIDING);
+export const hasMangaProgressProviding = (capabilities: number | number[]): boolean =>
+  hasCapability(capabilities, CAPABILITY_MANGA_PROGRESS_PROVIDING);
 
-export const hasCloudflareBypassProviding = (
-  capabilities: number | number[],
-): boolean =>
+export const hasCloudflareBypassProviding = (capabilities: number | number[]): boolean =>
   hasCapability(capabilities, CAPABILITY_CLOUDFLARE_BYPASS_PROVIDING);
 
 // Local Storage
@@ -282,11 +262,7 @@ export const loadCustomRepos = (): CustomRepository[] => {
       // Filter out any malformed repositories
       return repos.filter(
         (repo: CustomRepository) =>
-          repo &&
-          repo.owner &&
-          repo.name &&
-          repo.owner.length > 0 &&
-          repo.name.length > 0,
+          repo && repo.owner && repo.name && repo.owner.length > 0 && repo.name.length > 0,
       );
     } catch (e) {
       console.error("Failed to parse custom repos from localStorage:", e);
@@ -318,14 +294,9 @@ export const checkBranchExists = async (
   }
 };
 
-export const getDefaultBranch = async (
-  owner: string,
-  name: string,
-): Promise<string> => {
+export const getDefaultBranch = async (owner: string, name: string): Promise<string> => {
   try {
-    const response = await fetch(
-      `https://api.github.com/repos/${owner}/${name}`,
-    );
+    const response = await fetch(`https://api.github.com/repos/${owner}/${name}`);
     if (response.ok) {
       const data = await response.json();
       return data.default_branch;
@@ -382,10 +353,7 @@ export const useExtensions = () => {
 
         // Always use versioning.json data directly - no need to fetch contents separately
         for (const source of data.sources) {
-          const sourceRepo =
-            repo.id === "inkdex" && inkdexMeta
-              ? inkdexMeta[source.id]
-              : undefined;
+          const sourceRepo = repo.id === "inkdex" && inkdexMeta ? inkdexMeta[source.id] : undefined;
 
           allExtensions.push({
             name: source.id,
@@ -402,9 +370,7 @@ export const useExtensions = () => {
         }
       }
 
-      extensions.value = allExtensions.sort((a, b) =>
-        a.name.localeCompare(b.name),
-      );
+      extensions.value = allExtensions.sort((a, b) => a.name.localeCompare(b.name));
     } catch (e) {
       error.value = e instanceof Error ? e.message : "An error occurred";
     } finally {
@@ -414,9 +380,7 @@ export const useExtensions = () => {
     }
   };
 
-  const fetchExtensionsForRepo = async (
-    repo: CustomRepository,
-  ): Promise<void> => {
+  const fetchExtensionsForRepo = async (repo: CustomRepository): Promise<void> => {
     try {
       const data = await fetchVersioningJson(repo);
       if (!data) return;
@@ -427,10 +391,7 @@ export const useExtensions = () => {
       const newExtensions: Extension[] = [];
 
       for (const source of data.sources) {
-        const sourceRepo =
-          repo.id === "inkdex" && inkdexMeta
-            ? inkdexMeta[source.id]
-            : undefined;
+        const sourceRepo = repo.id === "inkdex" && inkdexMeta ? inkdexMeta[source.id] : undefined;
 
         newExtensions.push({
           name: source.id,
@@ -447,9 +408,7 @@ export const useExtensions = () => {
       }
 
       const existingBySource = new Map(
-        extensions.value
-          .filter((e) => e.source !== repo.id)
-          .map((e) => [e.name, e]),
+        extensions.value.filter((e) => e.source !== repo.id).map((e) => [e.name, e]),
       );
 
       for (const ext of newExtensions) {
@@ -464,9 +423,7 @@ export const useExtensions = () => {
     }
   };
 
-  const addCustomRepo = async (
-    repoUrl: string,
-  ): Promise<{ success: boolean; error?: string }> => {
+  const addCustomRepo = async (repoUrl: string): Promise<{ success: boolean; error?: string }> => {
     let owner = "";
     let name = "";
     let branch = "";

@@ -3,12 +3,6 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from "vue";
-import ExtensionCard from "./ExtensionCard.vue";
-import ExtensionDetails from "./ExtensionDetails.vue";
-import FilterPanel from "./FilterPanel.vue";
-import NotificationPanel from "./NotificationPanel.vue";
-import RepositoryManager from "./RepositoryManager.vue";
-import "./ExtensionList.css";
 import { useAvailableData } from "../composables/useAvailableData";
 import { useFilters } from "../composables/useFilters";
 import { useNotifications } from "../composables/useNotifications";
@@ -21,7 +15,13 @@ import {
   useExtensions,
   type Extension,
 } from "../lib/extensions";
+import "./ExtensionList.css";
 import { CONTENT_RATINGS, getBadgeColors } from "../lib/uiUtils";
+import ExtensionCard from "./ExtensionCard.vue";
+import ExtensionDetails from "./ExtensionDetails.vue";
+import FilterPanel from "./FilterPanel.vue";
+import NotificationPanel from "./NotificationPanel.vue";
+import RepositoryManager from "./RepositoryManager.vue";
 
 // Core extensions management
 const {
@@ -69,15 +69,12 @@ const {
 } = useFilters(extensions);
 
 // Available data composable
-const { availableLanguages, availableLabels, invalidateCache } =
-  useAvailableData(extensions);
+const { availableLanguages, availableLabels, invalidateCache } = useAvailableData(extensions);
 
 // Negated badges computed from labels
 const negatedBadges = computed(() => {
   return availableBadges.value.filter((badge) =>
-    Array.from(negatedLabels.value).some(
-      (label) => label === (badge as any).label,
-    ),
+    Array.from(negatedLabels.value).some((label) => label === (badge as any).label),
   );
 });
 
@@ -92,8 +89,7 @@ const filtersExpanded = ref(false);
 const showOnlySelected = ref(false);
 
 // Notifications
-const { notifications, showSuccess, showError, removeNotification } =
-  useNotifications();
+const { notifications, showSuccess, showError, removeNotification } = useNotifications();
 
 // Get all available badges from extensions
 const availableBadges = computed(() => {
@@ -110,10 +106,7 @@ const availableBadges = computed(() => {
 
 // Create a map of label names to badge objects for quick lookup
 const badgeMap = computed(() => {
-  const map = new Map<
-    string,
-    { textColor: string; backgroundColor: string; label: string }
-  >();
+  const map = new Map<string, { textColor: string; backgroundColor: string; label: string }>();
   for (const ext of extensions.value) {
     if (ext.metadata?.badges) {
       for (const badge of ext.metadata.badges) {
@@ -158,9 +151,7 @@ const { parseUrlParams } = useUrlSync(
 
 // Computed properties
 const showNSFW = computed(() => {
-  return (
-    selectedRatings.value.has("MATURE") || selectedRatings.value.has("ADULT")
-  );
+  return selectedRatings.value.has("MATURE") || selectedRatings.value.has("ADULT");
 });
 
 const visibleButtonCount = computed(() => {
@@ -173,11 +164,7 @@ const visibleButtonCount = computed(() => {
 });
 
 const hasAnyActiveFilters = computed(() => {
-  return (
-    hasActiveFilters.value ||
-    selectedSources.value.size > 0 ||
-    negatedSources.value.size > 0
-  );
+  return hasActiveFilters.value || selectedSources.value.size > 0 || negatedSources.value.size > 0;
 });
 
 const totalButtonCount = computed(() => {
@@ -227,10 +214,7 @@ const handleAddRepo = async () => {
       }
     }
 
-    showSuccess(
-      "Repository Added",
-      `${repoId || repoUrl} has been added successfully`,
-    );
+    showSuccess("Repository Added", `${repoId || repoUrl} has been added successfully`);
 
     if (repoId) {
       const addedRepo = customRepos.value.find((r) => r.id === repoId);
@@ -276,9 +260,7 @@ const handleRemoveRepo = async (repoId: string) => {
 
   // Clean up filters that depend on extensions from this repository
   // Get extensions that were from this repo before removal
-  const removedExtensions = extensions.value.filter(
-    (ext) => ext.source === repoId,
-  );
+  const removedExtensions = extensions.value.filter((ext) => ext.source === repoId);
 
   if (removedExtensions.length > 0) {
     // Clean up language filters that were only from this repo
@@ -299,14 +281,10 @@ const handleRemoveRepo = async (repoId: string) => {
     });
 
     // Check if any selected languages are no longer available
-    const selectedLanguagesToRemove = Array.from(
-      selectedLanguages.value,
-    ).filter(
+    const selectedLanguagesToRemove = Array.from(selectedLanguages.value).filter(
       (lang) =>
         languagesInRemovedExtensions.has(lang) &&
-        !extensions.value.some(
-          (ext) => ext.source !== repoId && ext.metadata?.language === lang,
-        ),
+        !extensions.value.some((ext) => ext.source !== repoId && ext.metadata?.language === lang),
     );
 
     const selectedLabelsToRemove = Array.from(selectedLabels.value).filter(
@@ -314,8 +292,7 @@ const handleRemoveRepo = async (repoId: string) => {
         labelsInRemovedExtensions.has(label) &&
         !extensions.value.some(
           (ext) =>
-            ext.source !== repoId &&
-            ext.metadata?.badges?.some((badge) => badge.label === label),
+            ext.source !== repoId && ext.metadata?.badges?.some((badge) => badge.label === label),
         ),
     );
 
@@ -323,9 +300,7 @@ const handleRemoveRepo = async (repoId: string) => {
     const negatedLanguagesToRemove = Array.from(negatedLanguages.value).filter(
       (lang) =>
         languagesInRemovedExtensions.has(lang) &&
-        !extensions.value.some(
-          (ext) => ext.source !== repoId && ext.metadata?.language === lang,
-        ),
+        !extensions.value.some((ext) => ext.source !== repoId && ext.metadata?.language === lang),
     );
 
     const negatedLabelsToRemove = Array.from(negatedLabels.value).filter(
@@ -333,21 +308,14 @@ const handleRemoveRepo = async (repoId: string) => {
         labelsInRemovedExtensions.has(label) &&
         !extensions.value.some(
           (ext) =>
-            ext.source !== repoId &&
-            ext.metadata?.badges?.some((badge) => badge.label === label),
+            ext.source !== repoId && ext.metadata?.badges?.some((badge) => badge.label === label),
         ),
     );
 
     // Remove obsolete filters
-    selectedLanguagesToRemove.forEach((lang) =>
-      selectedLanguages.value.delete(lang),
-    );
-    selectedLabelsToRemove.forEach((label) =>
-      selectedLabels.value.delete(label),
-    );
-    negatedLanguagesToRemove.forEach((lang) =>
-      negatedLanguages.value.delete(lang),
-    );
+    selectedLanguagesToRemove.forEach((lang) => selectedLanguages.value.delete(lang));
+    selectedLabelsToRemove.forEach((label) => selectedLabels.value.delete(label));
+    negatedLanguagesToRemove.forEach((lang) => negatedLanguages.value.delete(lang));
     negatedLabelsToRemove.forEach((label) => negatedLabels.value.delete(label));
   }
 
@@ -429,9 +397,7 @@ const installSelectedExtensions = () => {
       ? displayExtensions.value.map((ext) => [ext.name, getBaseUrl(ext.source)])
       : Array.from(selectedExtensions.value)
           .map((key) => {
-            const extension = extensions.value.find(
-              (ext) => `${ext.source}-${ext.name}` === key,
-            );
+            const extension = extensions.value.find((ext) => `${ext.source}-${ext.name}` === key);
             if (!extension) return null;
             return [extension.name, getBaseUrl(extension.source)];
           })
@@ -526,10 +492,7 @@ onMounted(async () => {
     );
   }
   for (const repoId of repoIdsToAdd) {
-    if (
-      repoId !== "inkdex" &&
-      !repoId.toLowerCase().includes("inkdex/extensions")
-    ) {
+    if (repoId !== "inkdex" && !repoId.toLowerCase().includes("inkdex/extensions")) {
       await addRepoFromId(repoId);
     }
   }
@@ -549,17 +512,13 @@ onMounted(async () => {
   let urlNeedsCleaning = false;
 
   // Validate selected extensions - remove ones that don't exist
-  const validExtensionIds = new Set(
-    extensions.value.map((ext) => `${ext.source}-${ext.name}`),
-  );
+  const validExtensionIds = new Set(extensions.value.map((ext) => `${ext.source}-${ext.name}`));
   const invalidSelectedExtensions = Array.from(selectedExtensions.value).filter(
     (id) => !validExtensionIds.has(id),
   );
 
   if (invalidSelectedExtensions.length > 0) {
-    invalidSelectedExtensions.forEach((id) =>
-      selectedExtensions.value.delete(id),
-    );
+    invalidSelectedExtensions.forEach((id) => selectedExtensions.value.delete(id));
     urlNeedsCleaning = true;
 
     // Clean sel parameter
@@ -580,16 +539,9 @@ onMounted(async () => {
     (lang) => !validLanguages.has(lang),
   );
 
-  if (
-    invalidSelectedLanguages.length > 0 ||
-    invalidNegatedLanguages.length > 0
-  ) {
-    invalidSelectedLanguages.forEach((lang) =>
-      selectedLanguages.value.delete(lang),
-    );
-    invalidNegatedLanguages.forEach((lang) =>
-      negatedLanguages.value.delete(lang),
-    );
+  if (invalidSelectedLanguages.length > 0 || invalidNegatedLanguages.length > 0) {
+    invalidSelectedLanguages.forEach((lang) => selectedLanguages.value.delete(lang));
+    invalidNegatedLanguages.forEach((lang) => negatedLanguages.value.delete(lang));
     urlNeedsCleaning = true;
 
     // Clean l parameter
@@ -619,9 +571,7 @@ onMounted(async () => {
   );
 
   if (invalidSelectedBadges.length > 0 || invalidNegatedBadges.length > 0) {
-    invalidSelectedBadges.forEach((badge) =>
-      selectedLabels.value.delete(badge),
-    );
+    invalidSelectedBadges.forEach((badge) => selectedLabels.value.delete(badge));
     invalidNegatedBadges.forEach((badge) => negatedLabels.value.delete(badge));
     urlNeedsCleaning = true;
 
@@ -643,10 +593,7 @@ onMounted(async () => {
   }
 
   // Validate repository filters - remove ones that don't exist
-  const validRepoIds = new Set([
-    "inkdex",
-    ...customRepos.value.map((r) => r.id),
-  ]);
+  const validRepoIds = new Set(["inkdex", ...customRepos.value.map((r) => r.id)]);
   const invalidSelectedRepos = Array.from(selectedSources.value).filter(
     (id) => !validRepoIds.has(id),
   );
@@ -723,9 +670,7 @@ onMounted(async () => {
       Loading extensions...
     </div>
 
-    <div v-else-if="error" class="error">
-      Error loading extensions: {{ error }}
-    </div>
+    <div v-else-if="error" class="error">Error loading extensions: {{ error }}</div>
 
     <div v-else-if="!hasAnyExtensions" class="no-results">
       <div class="no-results-icon">📦</div>
@@ -738,13 +683,7 @@ onMounted(async () => {
       <div class="search-section">
         <div class="search-bar">
           <div class="search-input-container">
-            <svg
-              class="search-icon"
-              width="14"
-              height="14"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fill-rule="evenodd"
                 d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -783,33 +722,24 @@ onMounted(async () => {
                   activeFilterCount
                 }}</span>
               </div>
-              <span class="expand-icon" :class="{ expanded: filtersExpanded }"
-                >▲</span
-              >
+              <span class="expand-icon" :class="{ expanded: filtersExpanded }">▲</span>
             </button>
 
             <!-- Repositories Button -->
             <button
               class="action-btn"
               :class="{
-                active:
-                  showRepoManager ||
-                  selectedSources.size > 0 ||
-                  negatedSources.size > 0,
+                active: showRepoManager || selectedSources.size > 0 || negatedSources.size > 0,
               }"
               @click="showRepoManager = !showRepoManager"
             >
               <div class="action-btn-content">
                 <span class="btn-text">Repositories</span>
-                <span
-                  v-if="selectedSources.size + negatedSources.size > 0"
-                  class="filter-count"
-                  >{{ selectedSources.size + negatedSources.size }}</span
-                >
+                <span v-if="selectedSources.size + negatedSources.size > 0" class="filter-count">{{
+                  selectedSources.size + negatedSources.size
+                }}</span>
               </div>
-              <span class="expand-icon" :class="{ expanded: showRepoManager }"
-                >▲</span
-              >
+              <span class="expand-icon" :class="{ expanded: showRepoManager }">▲</span>
             </button>
 
             <!-- Only Show Selected Button -->
@@ -892,18 +822,14 @@ onMounted(async () => {
             Showing {{ extensions.length }} extensions&nbsp;
           </template>
           <template v-else>
-            Showing {{ displayExtensions.length }} of
-            {{ extensions.length }} extensions&nbsp;
+            Showing {{ displayExtensions.length }} of {{ extensions.length }} extensions&nbsp;
             <span class="hidden-count">
-              ({{ extensions.length - displayExtensions.length }} hidden because
-              of filters)
+              ({{ extensions.length - displayExtensions.length }} hidden because of filters)
             </span>
           </template>
         </span>
         <span v-if="hasAnyActiveFilters" class="active-filters">
-          <span v-if="searchQuery" class="filter-tag"
-            >Search: "{{ searchQuery }}"</span
-          >
+          <span v-if="searchQuery" class="filter-tag">Search: "{{ searchQuery }}"</span>
           <!-- Selected Filters -->
           <!-- Content Rating -->
           <span
@@ -933,8 +859,7 @@ onMounted(async () => {
             :key="`lang-${lang}`"
             class="filter-tag language-tag"
           >
-            <template v-if="getLanguageEmoji(lang)"
-              >{{ getLanguageEmoji(lang) }}&nbsp;</template
+            <template v-if="getLanguageEmoji(lang)">{{ getLanguageEmoji(lang) }}&nbsp;</template
             >{{ getLanguageName(lang) }}
           </span>
 
@@ -944,8 +869,7 @@ onMounted(async () => {
             :key="`label-${label}`"
             class="filter-tag"
             :style="{
-              backgroundColor: getBadgeColors(badgeMap.get(label))
-                .backgroundColor,
+              backgroundColor: getBadgeColors(badgeMap.get(label)).backgroundColor,
               color: getBadgeColors(badgeMap.get(label)).textColor,
               borderColor: getBadgeColors(badgeMap.get(label)).textColor,
             }"
@@ -993,8 +917,7 @@ onMounted(async () => {
             :key="`negated-lang-${lang}`"
             class="filter-tag language-tag negated-tag"
           >
-            <template v-if="getLanguageEmoji(lang)"
-              >{{ getLanguageEmoji(lang) }}&nbsp;</template
+            <template v-if="getLanguageEmoji(lang)">{{ getLanguageEmoji(lang) }}&nbsp;</template
             >{{ getLanguageName(lang) }}
           </span>
 
@@ -1004,8 +927,7 @@ onMounted(async () => {
             :key="`negated-label-${label}`"
             class="filter-tag negated-tag"
             :style="{
-              backgroundColor: getBadgeColors(badgeMap.get(label))
-                .backgroundColor,
+              backgroundColor: getBadgeColors(badgeMap.get(label)).backgroundColor,
               color: getBadgeColors(badgeMap.get(label)).textColor,
               borderColor: getBadgeColors(badgeMap.get(label)).textColor,
             }"
@@ -1030,9 +952,7 @@ onMounted(async () => {
           v-for="extension in displayExtensions"
           :key="`${extension.source}-${extension.name}`"
           :extension="extension"
-          :selected="
-            selectedExtensions.has(`${extension.source}-${extension.name}`)
-          "
+          :selected="selectedExtensions.has(`${extension.source}-${extension.name}`)"
           :get-source-display-name="getSourceDisplayName"
           @toggle-extension="toggleExtension"
           @show-details="showExtensionDetails"
@@ -1053,10 +973,7 @@ onMounted(async () => {
     <!-- Floating Install Button -->
     <Teleport to="body">
       <div v-if="showInstallButton" class="floating-install-btn">
-        <button
-          class="install-selected-btn btn-brand"
-          @click="installSelectedExtensions"
-        >
+        <button class="install-selected-btn btn-brand" @click="installSelectedExtensions">
           <span v-if="selectedExtensions.size === 0">Install All</span>
           <span v-else>Install Selected</span>
           <span v-if="selectedExtensions.size > 0" class="selected-count">{{
@@ -1067,10 +984,7 @@ onMounted(async () => {
     </Teleport>
 
     <!-- Notification Panel -->
-    <NotificationPanel
-      :notifications="notifications"
-      @remove-notification="removeNotification"
-    />
+    <NotificationPanel :notifications="notifications" @remove-notification="removeNotification" />
 
     <!-- Extension Details Component -->
     <Teleport to="body">

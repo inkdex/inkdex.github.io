@@ -25,31 +25,19 @@ const DEFAULT_BADGE_COLORS = new Map([
   ["Fantasy", { textColor: "#ffffff", backgroundColor: "rgb(168, 85, 247)" }],
   ["Horror", { textColor: "#ffffff", backgroundColor: "rgb(239, 68, 68)" }],
   ["Mystery", { textColor: "#ffffff", backgroundColor: "rgb(107, 114, 128)" }],
-  [
-    "Psychological",
-    { textColor: "#ffffff", backgroundColor: "rgb(139, 92, 246)" },
-  ],
+  ["Psychological", { textColor: "#ffffff", backgroundColor: "rgb(139, 92, 246)" }],
   ["Sci-Fi", { textColor: "#ffffff", backgroundColor: "rgb(14, 165, 233)" }],
-  [
-    "Slice of Life",
-    { textColor: "#ffffff", backgroundColor: "rgb(34, 197, 94)" },
-  ],
+  ["Slice of Life", { textColor: "#ffffff", backgroundColor: "rgb(34, 197, 94)" }],
   ["Sports", { textColor: "#ffffff", backgroundColor: "rgb(251, 146, 60)" }],
   ["Thriller", { textColor: "#ffffff", backgroundColor: "rgb(220, 38, 38)" }],
   ["Adventure", { textColor: "#ffffff", backgroundColor: "rgb(16, 185, 129)" }],
   ["Historical", { textColor: "#ffffff", backgroundColor: "rgb(120, 53, 15)" }],
-  [
-    "Martial Arts",
-    { textColor: "#ffffff", backgroundColor: "rgb(217, 70, 239)" },
-  ],
+  ["Martial Arts", { textColor: "#ffffff", backgroundColor: "rgb(217, 70, 239)" }],
   ["Mecha", { textColor: "#ffffff", backgroundColor: "rgb(6, 182, 212)" }],
   ["Military", { textColor: "#ffffff", backgroundColor: "rgb(75, 85, 99)" }],
   ["Music", { textColor: "#ffffff", backgroundColor: "rgb(236, 72, 153)" }],
   ["School", { textColor: "#ffffff", backgroundColor: "rgb(34, 197, 94)" }],
-  [
-    "Supernatural",
-    { textColor: "#ffffff", backgroundColor: "rgb(168, 85, 247)" },
-  ],
+  ["Supernatural", { textColor: "#ffffff", backgroundColor: "rgb(168, 85, 247)" }],
 ]);
 
 /**
@@ -57,9 +45,7 @@ const DEFAULT_BADGE_COLORS = new Map([
  * Optimized for O(1) lookup instead of O(n) object traversal
  */
 export const getBadgeColors = (
-  badge:
-    | { textColor: string; backgroundColor: string; label?: string }
-    | undefined,
+  badge: { textColor: string; backgroundColor: string; label?: string } | undefined,
 ): { textColor: string; backgroundColor: string } => {
   // First try pre-computed colors for common labels
   if (badge?.label && DEFAULT_BADGE_COLORS.has(badge.label)) {
@@ -82,8 +68,6 @@ export const getBadgeColors = (
 export const CONTENT_RATINGS = ["SAFE", "MATURE", "ADULT"] as const;
 export type ContentRating = (typeof CONTENT_RATINGS)[number];
 
-export const isValidContentRating = (
-  rating: string,
-): rating is ContentRating => {
+export const isValidContentRating = (rating: string): rating is ContentRating => {
   return CONTENT_RATINGS.includes(rating as ContentRating);
 };

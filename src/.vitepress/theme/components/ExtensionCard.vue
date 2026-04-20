@@ -61,12 +61,8 @@ const handleImageError = (event: Event) => {
             class="rating-badge"
             :style="{
               color: getContentRatingColor(extension.metadata.contentRating),
-              backgroundColor: getContentRatingBg(
-                extension.metadata.contentRating,
-              ),
-              borderColor: getContentRatingColor(
-                extension.metadata.contentRating,
-              ),
+              backgroundColor: getContentRatingBg(extension.metadata.contentRating),
+              borderColor: getContentRatingColor(extension.metadata.contentRating),
             }"
           >
             {{ formatRating(extension.metadata.contentRating) }}
@@ -84,8 +80,7 @@ const handleImageError = (event: Event) => {
       <div class="extension-tags-row">
         <span
           v-if="
-            extension.metadata.capabilities &&
-            hasChapterProviding(extension.metadata.capabilities)
+            extension.metadata.capabilities && hasChapterProviding(extension.metadata.capabilities)
           "
           class="service-badge service-content"
           >Content Service</span
@@ -135,9 +130,7 @@ const handleImageError = (event: Event) => {
     <div class="extension-footer">
       <span v-if="selected" class="selected-indicator"> ✓ Selected </span>
       <div class="extension-actions" @click.stop>
-        <button class="btn-secondary details-btn" @click="handleDetailsClick">
-          Details
-        </button>
+        <button class="btn-secondary details-btn" @click="handleDetailsClick">Details</button>
       </div>
     </div>
   </div>

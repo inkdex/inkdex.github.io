@@ -3,10 +3,7 @@
 
 import { computed, ref, type Ref } from "vue";
 import { normalizeLanguageTag, type Extension } from "../lib/extensions";
-import {
-  LANGUAGE_EMOJI_MAP,
-  VALID_IETF_LANGUAGE_TAGS,
-} from "../lib/languageData";
+import { LANGUAGE_EMOJI_MAP, VALID_IETF_LANGUAGE_TAGS } from "../lib/languageData";
 
 export const useAvailableData = (extensions: Ref<Extension[]>) => {
   // Cache for computed values to avoid recalculation
@@ -28,10 +25,7 @@ export const useAvailableData = (extensions: Ref<Extension[]>) => {
     const currentHash = generateExtensionsHash(extensions.value);
 
     // Return cached value if extensions haven't changed
-    if (
-      currentHash === lastLanguagesHash.value &&
-      cachedLanguages.value.length > 0
-    ) {
+    if (currentHash === lastLanguagesHash.value && cachedLanguages.value.length > 0) {
       return cachedLanguages.value;
     }
 
