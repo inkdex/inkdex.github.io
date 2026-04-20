@@ -3,6 +3,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+
 import type { CustomRepository } from "../lib/extensions";
 
 interface Props {
@@ -47,12 +48,7 @@ const isValidRepoUrl = computed(() => {
   if (!url) return false;
 
   // Match github.com URLs
-  if (
-    /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+/.test(
-      url,
-    )
-  )
-    return true;
+  if (/^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+/.test(url)) return true;
 
   // Match owner/repo format
   if (/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(url)) return true;
@@ -92,10 +88,7 @@ const handleUrlKeyup = (event: KeyboardEvent) => {
 
 <template>
   <!-- Collapsible Repository Manager -->
-  <div
-    class="advanced-filters repos-section"
-    :class="{ expanded: showRepoManager }"
-  >
+  <div class="advanced-filters repos-section" :class="{ expanded: showRepoManager }">
     <div class="filter-group">
       <div class="filter-header">
         <span class="filter-label">Add Repository</span>
@@ -106,12 +99,7 @@ const handleUrlKeyup = (event: KeyboardEvent) => {
           type="text"
           placeholder="https://github.com/owner/repo"
           class="search-input repo-input"
-          @input="
-            $emit(
-              'update:new-repo-url',
-              ($event.target as HTMLInputElement)?.value || '',
-            )
-          "
+          @input="$emit('update:new-repo-url', ($event.target as HTMLInputElement)?.value || '')"
           @keyup="handleUrlKeyup"
         />
         <button
@@ -145,10 +133,7 @@ const handleUrlKeyup = (event: KeyboardEvent) => {
             negated: negatedSources.has(source),
           }"
         >
-          <button
-            class="repo-chip-name clickable"
-            @click="handleToggleSource(source)"
-          >
+          <button class="repo-chip-name clickable" @click="handleToggleSource(source)">
             {{ getSourceDisplayName(source) }}
           </button>
           <button

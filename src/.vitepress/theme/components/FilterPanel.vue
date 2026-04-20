@@ -3,11 +3,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import {
-  getLanguageEmoji,
-  getLanguageName,
-  type Extension,
-} from "../lib/extensions";
+import { getLanguageEmoji, getLanguageName, type Extension } from "../lib/extensions";
 import { formatRating, getBadgeColors } from "../lib/uiUtils";
 
 interface Props {
@@ -70,10 +66,7 @@ const activeFilterCount = computed(() => {
 
 // Create a map of label names to badge objects for quick lookup
 const badgeMap = computed(() => {
-  const map = new Map<
-    string,
-    { textColor: string; backgroundColor: string; label: string }
-  >();
+  const map = new Map<string, { textColor: string; backgroundColor: string; label: string }>();
   for (const ext of props.extensions) {
     if (ext.metadata?.badges) {
       for (const badge of ext.metadata.badges) {
@@ -181,9 +174,7 @@ const badgeMap = computed(() => {
             >{{ getLanguageEmoji(language) }}&nbsp;</template
           >{{ getLanguageName(language) }}
         </button>
-        <div v-if="availableLanguages.length === 0" class="no-items">
-          No languages found
-        </div>
+        <div v-if="availableLanguages.length === 0" class="no-items">No languages found</div>
       </div>
     </div>
 
@@ -215,8 +206,7 @@ const badgeMap = computed(() => {
           :style="
             selectedLabels.has(label)
               ? {
-                  backgroundColor: getBadgeColors(badgeMap.get(label))
-                    .backgroundColor,
+                  backgroundColor: getBadgeColors(badgeMap.get(label)).backgroundColor,
                   color: getBadgeColors(badgeMap.get(label)).textColor,
                   borderColor: getBadgeColors(badgeMap.get(label)).textColor,
                 }
@@ -226,9 +216,7 @@ const badgeMap = computed(() => {
         >
           {{ label }}
         </button>
-        <div v-if="availableLabels.length === 0" class="no-items">
-          No badges found
-        </div>
+        <div v-if="availableLabels.length === 0" class="no-items">No badges found</div>
       </div>
     </div>
   </div>

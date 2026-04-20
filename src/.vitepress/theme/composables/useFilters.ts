@@ -2,13 +2,14 @@
 /* Copyright © 2025 Inkdex */
 
 import { computed, ref, watch, type Ref } from "vue";
-import type { Extension } from "../lib/extensions";
 import {
   hasChapterProviding,
   hasCloudflareBypassProviding,
   hasMangaProgressProviding,
 } from "../lib/extensions";
 import { CONTENT_RATINGS } from "../lib/uiUtils";
+
+import type { Extension } from "../lib/extensions";
 
 export interface FilterState {
   searchQuery: Ref<string>;
@@ -62,11 +63,7 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
 
   // Available options computed from extensions
   const availableRatings = [...CONTENT_RATINGS];
-  const availableServices = [
-    "Content Service",
-    "Tracker Service",
-    "Cloudflare",
-  ];
+  const availableServices = ["Content Service", "Tracker Service", "Cloudflare"];
 
   // Memoized filter criteria for performance
   const matchesSearch = computed(() => {
@@ -79,9 +76,7 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
         (extension.metadata?.description &&
           extension.metadata.description.toLowerCase().includes(query)) ||
         (extension.metadata?.badges &&
-          extension.metadata.badges.some((badge) =>
-            badge.label.toLowerCase().includes(query),
-          ))
+          extension.metadata.badges.some((badge) => badge.label.toLowerCase().includes(query)))
       );
     };
   });
@@ -103,8 +98,7 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
   const matchesSource = computed(() => {
     return (extension: Extension) => {
       return (
-        (selectedSources.value.size === 0 ||
-          selectedSources.value.has(extension.source)) &&
+        (selectedSources.value.size === 0 || selectedSources.value.has(extension.source)) &&
         !negatedSources.value.has(extension.source)
       );
     };
@@ -116,10 +110,7 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
         (selectedLanguages.value.size === 0 ||
           (extension.metadata?.language &&
             selectedLanguages.value.has(extension.metadata.language))) &&
-        !(
-          extension.metadata?.language &&
-          negatedLanguages.value.has(extension.metadata.language)
-        )
+        !(extension.metadata?.language && negatedLanguages.value.has(extension.metadata.language))
       );
     };
   });
@@ -130,13 +121,9 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
         (selectedLabels.value.size === 0 ||
           (extension.metadata?.badges &&
             (badgeFilterMode.value === "or"
-              ? extension.metadata.badges.some((badge) =>
-                  selectedLabels.value.has(badge.label),
-                )
+              ? extension.metadata.badges.some((badge) => selectedLabels.value.has(badge.label))
               : Array.from(selectedLabels.value).every((label) =>
-                  extension.metadata?.badges?.some(
-                    (badge) => badge.label === label,
-                  ),
+                  extension.metadata?.badges?.some((badge) => badge.label === label),
                 )))) &&
         !Array.from(negatedLabels.value).some(
           (label) =>
@@ -158,13 +145,9 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
                   if (service === "Content Service")
                     return hasChapterProviding(extension.metadata.capabilities);
                   if (service === "Tracker Service")
-                    return hasMangaProgressProviding(
-                      extension.metadata.capabilities,
-                    );
+                    return hasMangaProgressProviding(extension.metadata.capabilities);
                   if (service === "Cloudflare")
-                    return hasCloudflareBypassProviding(
-                      extension.metadata.capabilities,
-                    );
+                    return hasCloudflareBypassProviding(extension.metadata.capabilities);
                   return false;
                 })
               : Array.from(selectedServices.value).some((service) => {
@@ -172,13 +155,9 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
                   if (service === "Content Service")
                     return hasChapterProviding(extension.metadata.capabilities);
                   if (service === "Tracker Service")
-                    return hasMangaProgressProviding(
-                      extension.metadata.capabilities,
-                    );
+                    return hasMangaProgressProviding(extension.metadata.capabilities);
                   if (service === "Cloudflare")
-                    return hasCloudflareBypassProviding(
-                      extension.metadata.capabilities,
-                    );
+                    return hasCloudflareBypassProviding(extension.metadata.capabilities);
                   return false;
                 })))) &&
         !Array.from(negatedServices.value).some((service) => {
@@ -188,9 +167,7 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
           if (service === "Tracker Service")
             return hasMangaProgressProviding(extension.metadata.capabilities);
           if (service === "Cloudflare")
-            return hasCloudflareBypassProviding(
-              extension.metadata.capabilities,
-            );
+            return hasCloudflareBypassProviding(extension.metadata.capabilities);
           return false;
         })
       );
@@ -212,10 +189,7 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
   });
 
   // Three-state toggle functions
-  const createToggleFunction = (
-    selected: Ref<Set<string>>,
-    negated: Ref<Set<string>>,
-  ) => {
+  const createToggleFunction = (selected: Ref<Set<string>>, negated: Ref<Set<string>>) => {
     return (value: string) => {
       if (selected.value.has(value)) {
         selected.value.delete(value);
@@ -232,10 +206,7 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
   };
 
   const toggleRating = createToggleFunction(selectedRatings, negatedRatings);
-  const toggleLanguage = createToggleFunction(
-    selectedLanguages,
-    negatedLanguages,
-  );
+  const toggleLanguage = createToggleFunction(selectedLanguages, negatedLanguages);
   const toggleLabel = createToggleFunction(selectedLabels, negatedLabels);
   const toggleService = createToggleFunction(selectedServices, negatedServices);
   const toggleSource = createToggleFunction(selectedSources, negatedSources);
@@ -302,9 +273,7 @@ export const useFilters = (extensions: Ref<Extension[]>) => {
 
   // Check if any filters are active
   const hasActiveFilters = computed(() => {
-    return (
-      activeFilterCount.value > 0 || debouncedSearchQuery.value.trim() !== ""
-    );
+    return activeFilterCount.value > 0 || debouncedSearchQuery.value.trim() !== "";
   });
 
   return {

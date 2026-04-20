@@ -1172,8 +1172,8 @@
   .details-overlay {
     padding: 1rem;
     /* Use viewport units that account for dynamic viewport height on mobile */
-    inset: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0)
-      env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+    inset: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0)
+      env(safe-area-inset-left, 0);
   }
   .details-modal {
     /* Use max-height with min to ensure proper sizing on mobile */
@@ -1852,8 +1852,8 @@
     padding: 1rem;
     align-items: center;
     /* Use safe area insets for mobile browser UI */
-    inset: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0)
-      env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+    inset: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0)
+      env(safe-area-inset-left, 0);
   }
   .extension-search-modal {
     /* Use dynamic viewport height to account for mobile browser UI */

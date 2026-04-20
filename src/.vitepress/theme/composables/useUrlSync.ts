@@ -2,8 +2,9 @@
 /* Copyright © 2025 Inkdex */
 
 import { watch, type Ref } from "vue";
-import type { CustomRepository, Extension } from "../lib/extensions";
 import { CONTENT_RATINGS } from "../lib/uiUtils";
+
+import type { CustomRepository, Extension } from "../lib/extensions";
 
 export interface UrlSyncState {
   searchQuery: Ref<string>;
@@ -66,9 +67,7 @@ export const useUrlSync = (
       const providedRatings = ratingParam
         .split(",")
         .map((rating) => rating.toUpperCase())
-        .filter((rating) =>
-          validRatings.has(rating as (typeof CONTENT_RATINGS)[number]),
-        );
+        .filter((rating) => validRatings.has(rating as (typeof CONTENT_RATINGS)[number]));
       state.selectedRatings.value = new Set(providedRatings);
     }
 
@@ -78,20 +77,14 @@ export const useUrlSync = (
       const providedRatings = notRatingParam
         .split(",")
         .map((rating) => rating.toUpperCase())
-        .filter((rating) =>
-          validRatings.has(rating as (typeof CONTENT_RATINGS)[number]),
-        );
+        .filter((rating) => validRatings.has(rating as (typeof CONTENT_RATINGS)[number]));
       state.negatedRatings.value = new Set(providedRatings);
     }
 
     // Parse service filters
     const serviceParam = urlParams.get("svc");
     if (serviceParam) {
-      const validServices = new Set([
-        "Content Service",
-        "Tracker Service",
-        "Cloudflare",
-      ]);
+      const validServices = new Set(["Content Service", "Tracker Service", "Cloudflare"]);
       const providedServices = serviceParam
         .split(",")
         .map((service) => {
@@ -107,11 +100,7 @@ export const useUrlSync = (
 
     const notServiceParam = urlParams.get("nsvc");
     if (notServiceParam) {
-      const validServices = new Set([
-        "Content Service",
-        "Tracker Service",
-        "Cloudflare",
-      ]);
+      const validServices = new Set(["Content Service", "Tracker Service", "Cloudflare"]);
       const providedServices = notServiceParam
         .split(",")
         .map((service) => {
@@ -229,10 +218,7 @@ export const useUrlSync = (
     }
 
     // Conflict resolution: remove negated filters that conflict with selected ones
-    const removeConflicts = (
-      selected: Ref<Set<string>>,
-      negated: Ref<Set<string>>,
-    ) => {
+    const removeConflicts = (selected: Ref<Set<string>>, negated: Ref<Set<string>>) => {
       for (const item of selected.value) {
         negated.value.delete(item);
       }
@@ -313,15 +299,11 @@ export const useUrlSync = (
 
     // Add content rating filters
     if (state.selectedRatings.value.size > 0) {
-      const ratings = Array.from(state.selectedRatings.value).map((r) =>
-        r.toLowerCase(),
-      );
+      const ratings = Array.from(state.selectedRatings.value).map((r) => r.toLowerCase());
       urlParams.set("cr", ratings.join(","));
     }
     if (state.negatedRatings.value.size > 0) {
-      const ratings = Array.from(state.negatedRatings.value).map((r) =>
-        r.toLowerCase(),
-      );
+      const ratings = Array.from(state.negatedRatings.value).map((r) => r.toLowerCase());
       urlParams.set("ncr", ratings.join(","));
     }
 
@@ -342,8 +324,8 @@ export const useUrlSync = (
     // Add language filters
     if (state.selectedLanguages.value.size > 0) {
       const allAvailableLanguages = new Set(availableLanguages.value);
-      const validLanguages = Array.from(state.selectedLanguages.value).filter(
-        (lang) => allAvailableLanguages.has(lang),
+      const validLanguages = Array.from(state.selectedLanguages.value).filter((lang) =>
+        allAvailableLanguages.has(lang),
       );
       if (validLanguages.length > 0) {
         urlParams.set("l", validLanguages.join(",").toLowerCase());
@@ -351,8 +333,8 @@ export const useUrlSync = (
     }
     if (state.negatedLanguages.value.size > 0) {
       const allAvailableLanguages = new Set(availableLanguages.value);
-      const validLanguages = Array.from(state.negatedLanguages.value).filter(
-        (lang) => allAvailableLanguages.has(lang),
+      const validLanguages = Array.from(state.negatedLanguages.value).filter((lang) =>
+        allAvailableLanguages.has(lang),
       );
       if (validLanguages.length > 0) {
         urlParams.set("nl", validLanguages.join(",").toLowerCase());
@@ -362,8 +344,8 @@ export const useUrlSync = (
     // Add badge filters
     if (state.selectedLabels.value.size > 0) {
       const allAvailableBadges = new Set(availableLabels.value);
-      const validBadges = Array.from(state.selectedLabels.value).filter(
-        (badge) => allAvailableBadges.has(badge),
+      const validBadges = Array.from(state.selectedLabels.value).filter((badge) =>
+        allAvailableBadges.has(badge),
       );
       if (validBadges.length > 0) {
         // Properly encode special characters for URL
@@ -372,8 +354,8 @@ export const useUrlSync = (
     }
     if (state.negatedLabels.value.size > 0) {
       const allAvailableBadges = new Set(availableLabels.value);
-      const validBadges = Array.from(state.negatedLabels.value).filter(
-        (badge) => allAvailableBadges.has(badge),
+      const validBadges = Array.from(state.negatedLabels.value).filter((badge) =>
+        allAvailableBadges.has(badge),
       );
       if (validBadges.length > 0) {
         // Properly encode special characters for URL
@@ -382,20 +364,14 @@ export const useUrlSync = (
     }
 
     // Add badge and service filter modes to URL only when filters are present
-    if (
-      state.selectedLabels.value.size > 0 ||
-      state.negatedLabels.value.size > 0
-    ) {
+    if (state.selectedLabels.value.size > 0 || state.negatedLabels.value.size > 0) {
       urlParams.set("bm", state.badgeFilterMode.value);
     } else {
       // Remove bm parameter if no badge filters are active
       urlParams.delete("bm");
     }
 
-    if (
-      state.selectedServices.value.size > 0 ||
-      state.negatedServices.value.size > 0
-    ) {
+    if (state.selectedServices.value.size > 0 || state.negatedServices.value.size > 0) {
       urlParams.set("sm", state.serviceFilterMode.value);
     } else {
       // Remove sm parameter if no service filters are active

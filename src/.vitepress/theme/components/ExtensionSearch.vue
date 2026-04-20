@@ -147,17 +147,12 @@ defineExpose({ open });
               <span>Loading extensions...</span>
             </div>
 
-            <div
-              v-else-if="searchQuery && filteredExtensions.length === 0"
-              class="search-empty"
-            >
+            <div v-else-if="searchQuery && filteredExtensions.length === 0" class="search-empty">
               <span>No extensions found for "{{ searchQuery }}"</span>
             </div>
 
             <div v-else-if="!searchQuery" class="search-hint">
-              <span
-                >Type to search extensions by name, description, or tags</span
-              >
+              <span>Type to search extensions by name, description, or tags</span>
             </div>
 
             <div v-else class="results-list">
@@ -175,8 +170,7 @@ defineExpose({ open });
                   class="result-icon"
                   @error="
                     (e) =>
-                      ((e.target as HTMLImageElement).src =
-                        'https://paperback.moe/pb-logo.png')
+                      ((e.target as HTMLImageElement).src = 'https://paperback.moe/pb-logo.png')
                   "
                 />
                 <div class="result-info">
@@ -186,21 +180,14 @@ defineExpose({ open });
                       v-if="ext.metadata?.contentRating"
                       class="result-rating"
                       :style="{
-                        color: getContentRatingColor(
-                          ext.metadata.contentRating,
-                        ),
-                        backgroundColor: getContentRatingBg(
-                          ext.metadata.contentRating,
-                        ),
+                        color: getContentRatingColor(ext.metadata.contentRating),
+                        backgroundColor: getContentRatingBg(ext.metadata.contentRating),
                       }"
                     >
                       {{ ext.metadata.contentRating }}
                     </span>
                   </div>
-                  <div
-                    v-if="ext.metadata?.description"
-                    class="result-description"
-                  >
+                  <div v-if="ext.metadata?.description" class="result-description">
                     {{ ext.metadata.description }}
                   </div>
                 </div>
@@ -213,8 +200,7 @@ defineExpose({ open });
 
           <div class="search-footer">
             <div class="footer-hint">
-              <kbd>↑</kbd><kbd>↓</kbd> to navigate <kbd>↵</kbd> to select
-              <kbd>ESC</kbd> to close
+              <kbd>↑</kbd><kbd>↓</kbd> to navigate <kbd>↵</kbd> to select <kbd>ESC</kbd> to close
             </div>
           </div>
         </div>

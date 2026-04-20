@@ -105,7 +105,4 @@ export const LANGUAGE_EMOJI_MAP: Record<string, string> = {
   lv: "🇱🇻",
 };
 
-export const VALID_IETF_LANGUAGE_TAGS = new Set([
-  ...Object.keys(LANGUAGE_EMOJI_MAP),
-  "multi",
-]);
+export const VALID_IETF_LANGUAGE_TAGS = new Set([...Object.keys(LANGUAGE_EMOJI_MAP), "multi"]);

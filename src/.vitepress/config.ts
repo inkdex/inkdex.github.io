@@ -39,8 +39,7 @@ export default defineConfig({
     sidebar: sidebarConfig,
 
     editLink: {
-      pattern:
-        "https://github.com/inkdex/inkdex.github.io/tree/master/src/:path",
+      pattern: "https://github.com/inkdex/inkdex.github.io/tree/master/src/:path",
     },
 
     footer: {
