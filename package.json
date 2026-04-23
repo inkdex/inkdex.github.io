@@ -17,11 +17,11 @@
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "oxfmt": "^0.45.0",
-    "oxlint": "^1.60.0",
+    "oxfmt": "^0.46.0",
+    "oxlint": "^1.61.0",
     "oxlint-tsgolint": "^0.21.1",
     "vitepress": "^2.0.0-alpha.17",
-    "vue": "^3.5.32",
+    "vue": "^3.5.33",
     "vue-tsc": "^3.2.7"
   }
 }
