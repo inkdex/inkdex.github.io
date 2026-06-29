@@ -21,7 +21,7 @@
     "oxlint": "^1.71.0",
     "oxlint-tsgolint": "^0.23.0",
     "vitepress": "^2.0.0-alpha.17",
-    "vue": "^3.5.38",
+    "vue": "^3.5.39",
     "vue-tsc": "^3.3.5"
   }
 }
