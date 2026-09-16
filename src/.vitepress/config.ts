@@ -49,7 +49,7 @@ export default defineConfig({
 
   markdown: {
     image: {
-      lazyLoading: true,
+      lazyLoad: true,
     },
   },
 });
