@@ -20,8 +20,12 @@
     "oxfmt": "^0.68.0",
     "oxlint": "^1.83.0",
     "oxlint-tsgolint": "^7.0.2001",
+    "typescript": "npm:typescript-native-bridge@6.0.3-bridge.6.tsgo.7.0.2",
     "vitepress": "^2.0.0-alpha.20",
     "vue": "^3.5.42",
     "vue-tsc": "^3.3.11"
+  },
+  "overrides": {
+    "typescript": "$typescript"
   }
 }
