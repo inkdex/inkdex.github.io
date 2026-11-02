@@ -21,7 +21,7 @@
     "oxlint": "^1.88.0",
     "oxlint-tsgolint": "^7.0.2004",
     "typescript": "npm:typescript-native-bridge@6.0.3-bridge.6.tsgo.7.0.2",
-    "vitepress": "^2.0.0-alpha.20",
+    "vitepress": "^2.0.0-alpha.21",
     "vue": "^3.5.44",
     "vue-tsc": "^3.3.13"
   },
